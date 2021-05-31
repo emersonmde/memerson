@@ -5,7 +5,7 @@ import * as Infrastructure from '../lib/infrastructure-stack';
 test('Empty Stack', () => {
     const app = new cdk.App();
     // WHEN
-    const stack = new Infrastructure.InfrastructureStack(app, 'MyTestStack');
+    const stack = new Infrastructure.MemersonInfrastructureStack(app, 'MyTestStack');
     // THEN
     expectCDK(stack).to(matchTemplate({
       "Resources": {}
