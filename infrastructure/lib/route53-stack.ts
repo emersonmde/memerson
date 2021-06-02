@@ -13,6 +13,14 @@ export class MemersonRoute53Stack extends cdk.Stack {
         zoneName: 'memerson.net'
     });
 
+    new route53.TxtRecord(this, 'ProtonMailTxtRecord', {
+        zone: this.hostedZone,
+        recordName: 'protonmail',
+        values: [
+            'protonmail-verification=12f676345e1db386f504a9bbd2b52ce906a3ccdd'
+        ],
+    });
+
     const nameservers = this.hostedZone.hostedZoneNameServers as string[];
     new cdk.CfnOutput(this, 'MemersonNameServers', { value: cdk.Fn.join(',', nameservers) });
   }
