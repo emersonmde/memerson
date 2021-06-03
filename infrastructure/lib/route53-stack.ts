@@ -15,10 +15,25 @@ export class MemersonRoute53Stack extends cdk.Stack {
 
     new route53.TxtRecord(this, 'ProtonMailTxtRecord', {
         zone: this.hostedZone,
-        recordName: 'protonmail',
         values: [
-            'protonmail-verification=12f676345e1db386f504a9bbd2b52ce906a3ccdd'
+            'protonmail-verification=12f676345e1db386f504a9bbd2b52ce906a3ccdd',
+            'v=spf1 include:_spf.protonmail.ch mx ~all',
         ],
+    });
+
+    new route53.MxRecord(this, 'ProtonMailMxRecord', {
+        zone: this.hostedZone,
+        values: [
+            {
+                hostName: 'mail.protonmail.ch',
+                priority: 10
+            },
+            {
+                hostName: 'mailsec.protonmail.ch',
+                priority: 20
+            },
+        ]
+        
     });
 
     const nameservers = this.hostedZone.hostedZoneNameServers as string[];
