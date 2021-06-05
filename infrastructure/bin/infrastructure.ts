@@ -25,7 +25,7 @@ const amplifyStack = new AmplifyStack(app, 'MemersonAmplifyStack', {
 });
 
 const autoDeployedStages = [
-  route53Stack.stackName
+  amplifyStack.stackName
 ]
 
 new PipelineStack(app, 'MemersonPipelineStack', {autoDeployedStacks: autoDeployedStages});
