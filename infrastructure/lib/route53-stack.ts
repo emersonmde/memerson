@@ -3,7 +3,7 @@ import * as route53 from '@aws-cdk/aws-route53';
 
 
 
-export class MemersonRoute53Stack extends cdk.Stack {
+export class Route53Stack extends cdk.Stack {
   hostedZone: route53.PublicHostedZone;
 
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {

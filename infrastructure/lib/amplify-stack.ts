@@ -6,7 +6,7 @@ export interface MemersonAmplifyStackProps extends cdk.StackProps {
   hostedZone: route53.PublicHostedZone;
 }
 
-export class MemersonAmplifyStack extends cdk.Stack {
+export class AmplifyStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: MemersonAmplifyStackProps) {
     super(scope, id, props);
 

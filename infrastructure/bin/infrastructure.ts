@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from '@aws-cdk/core';
-import { MemersonAmplifyStack } from '../lib/amplify-stack';
-import { MemersonRoute53Stack } from '../lib/route53-stack';
+import { AmplifyStack } from '../lib/amplify-stack';
+import { Route53Stack } from '../lib/route53-stack';
+import { PipelineStack } from '../lib/pipeline-stack';
 
 const app = new cdk.App();
-const route53Stack = new MemersonRoute53Stack(app, 'MemersonRoute53Stack');
-new MemersonAmplifyStack(app, 'MemersonAmplifyStack', {
+const route53Stack = new Route53Stack(app, 'MemersonRoute53Stack', {});
+const amplifyStack = new AmplifyStack(app, 'MemersonAmplifyStack', {
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
    * but a single synthesized template can be deployed anywhere. */
@@ -22,3 +23,10 @@ new MemersonAmplifyStack(app, 'MemersonAmplifyStack', {
   /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
   hostedZone: route53Stack.hostedZone
 });
+
+// const autoDeployedStages = [
+//   route53Stack.stackName
+// ]
+
+// new PipelineStack(app, 'MemersonPipelineStack', {autoDeployedStacks: autoDeployedStages});
+new PipelineStack(app, 'MemersonPipelineStack', {});
