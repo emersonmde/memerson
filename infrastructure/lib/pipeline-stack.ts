@@ -55,7 +55,7 @@ export class PipelineStack extends cdk.Stack {
 
       // https://docs.aws.amazon.com/cdk/latest/guide/codepipeline_example.html
       const pipeline = new codepipeline.Pipeline(this, 'CodePipeline', {
-          pipelineName: 'Make_it_so',
+          pipelineName: 'MakeItSo',
       });
 
       pipeline.addStage({
