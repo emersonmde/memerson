@@ -1,7 +1,7 @@
-import { AppBar, IconButton, Toolbar, Typography, Button } from "@material-ui/core";
-import { Menu, PlayCircleFilledTwoTone } from "@material-ui/icons"
+import { AppBar, Toolbar, Typography, Button, Icon } from "@material-ui/core";
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from "react-router-dom";
+import ArchiveIcon from '@material-ui/icons/Archive';
 
 
 
@@ -9,6 +9,10 @@ const useStyles = makeStyles(theme => ({
     root: {
         background: theme.palette.background.default
     },
+    menuButton: {
+        marginLeft: 'auto',
+        marginRight: theme.spacing(1)
+    }
   }));
 
 
@@ -18,19 +22,19 @@ export default function Header() {
     return (
         <AppBar position="static" className={classes.root}>
             <Toolbar className="header">
-                <IconButton edge="start" color="inherit" aria-label="menu">
-                    <Menu />
-                </IconButton>
+                <ArchiveIcon />
                 <Typography variant="h5">
                     Matthew Emerson
                 </Typography>
 
-                <Button variant="text" color="inherit" component={Link} to="/">
-                    Home
-                </Button>
-                <Button variant="text" color="inherit" component={Link} to="/about">
-                    About
-                </Button>
+                <div className={classes.menuButton}>
+                    <Button variant="text" color="inherit" component={Link} to="/">
+                        Home
+                    </Button>
+                    <Button variant="text" color="inherit" component={Link} to="/about">
+                        About
+                    </Button>
+                </div>
             </Toolbar>
         </AppBar>
     )
