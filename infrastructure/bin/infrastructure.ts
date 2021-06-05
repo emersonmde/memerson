@@ -29,4 +29,3 @@ const autoDeployedStages = [
 ]
 
 new PipelineStack(app, 'MemersonPipelineStack', {autoDeployedStacks: autoDeployedStages});
-// new PipelineStack(app, 'MemersonPipelineStack', {});
