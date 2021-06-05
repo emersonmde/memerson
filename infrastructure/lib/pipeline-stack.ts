@@ -35,7 +35,7 @@ export class PipelineStack extends cdk.Stack {
             },
           },
           artifacts: {
-            'base-directory': 'dist',
+            'base-directory': 'infrastructure/dist',
             files: autoDeployedStacks.map((stack: string) => stack + '.template.json')
             // files: [
             //   'MemersonAmplifyStack.template.json',
@@ -106,6 +106,5 @@ export class PipelineStack extends cdk.Stack {
           adminPermissions: true,
         }));
       });
-
     }
 }

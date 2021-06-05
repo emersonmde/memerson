@@ -24,9 +24,9 @@ const amplifyStack = new AmplifyStack(app, 'MemersonAmplifyStack', {
   hostedZone: route53Stack.hostedZone
 });
 
-// const autoDeployedStages = [
-//   route53Stack.stackName
-// ]
+const autoDeployedStages = [
+  route53Stack.stackName
+]
 
-// new PipelineStack(app, 'MemersonPipelineStack', {autoDeployedStacks: autoDeployedStages});
-new PipelineStack(app, 'MemersonPipelineStack', {});
+new PipelineStack(app, 'MemersonPipelineStack', {autoDeployedStacks: autoDeployedStages});
+// new PipelineStack(app, 'MemersonPipelineStack', {});
