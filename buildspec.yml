@@ -3,13 +3,10 @@ version: 0.2
 phases:
   install:
     commands:
-      - echo Installing npm packages
       - npm ci
   build:
     commands:
-      - echo Building react app
       - npm run build
-      - echo Built react app on `date`
 artifacts:
   base-directory: ./build
   files:
