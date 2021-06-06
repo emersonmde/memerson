@@ -1,17 +1,41 @@
 import * as cdk from '@aws-cdk/core';
 import * as route53 from '@aws-cdk/aws-route53';
+import * as certificatemanager from '@aws-cdk/aws-certificatemanager'
 
 
 
 export class Route53Stack extends cdk.Stack {
+  domain: string = 'memerson.net'
   hostedZone: route53.PublicHostedZone;
+  certificate: certificatemanager.Certificate;
 
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
     this.hostedZone = new route53.PublicHostedZone(this, 'MemersonHostedZone', {
-        zoneName: 'memerson.net'
+        zoneName: this.domain,
     });
+
+    this.certificate = new certificatemanager.Certificate(this, 'MemersonCert', {
+        domainName: this.domain,
+        validation: certificatemanager.CertificateValidation.fromDns(this.hostedZone),
+        // subjectAlternativeNames: [`*.${this.domain}`],
+    });
+    // this.certificate = new certificatemanager.DnsValidatedCertificate(this, 'MemersonCert', {
+    //     region: 'us-east-1',
+    //     hostedZone: this.hostedZone,
+    //     domainName: this.domain,
+    //     // subjectAlternativeNames: [`*.${this.domain}`],
+    //     validationDomains: {
+    //         [this.domain]: this.domain,
+    //         // [`*.${this.domain}`]: this.domain
+    //     },
+    //     validationMethod: certificatemanager.ValidationMethod.DNS,
+    // });
+
+    // new route53.PublicHostedZone(this, 'TestMemersonHostedZone', {
+    //     zoneName: 'test.memerson.net',
+    // });
 
     new route53.TxtRecord(this, 'MemersonTxtRecord', {
         zone: this.hostedZone,
