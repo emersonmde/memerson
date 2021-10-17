@@ -3,8 +3,6 @@
     "target": "ES2018",
     "module": "commonjs",
     "lib": ["es2018"],
-    "baseUrl": "lib",
-    "checkJs": true,
     "declaration": true,
     "strict": true,
     "noImplicitAny": true,
@@ -23,6 +21,5 @@
   },
   "exclude": [
     "cdk.out",
-    "./dist/**/*"
   ]
 }
