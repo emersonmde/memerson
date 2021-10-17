@@ -1,31 +1,16 @@
 {
   "compilerOptions": {
-    "baseUrl": "src",
-    "jsx": "react-jsx",
-    "target": "es5",
-    "module": "esnext",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": true,
-    "allowSyntheticDefaultImports": true,
-    "noFallthroughCasesInSwitch": true,
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "noImplicitThis": true,
-    "alwaysStrict": true,
+    "lib": ["ES2019"],
+    "module": "commonjs",
+    "target": "ES2015",
+    "typeRoots": [
+      "node_modules/@types"
+    ]
   },
-  "include": [
-    "src"
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Recommended",
+  "exclude": [
+    "node_modules",
+    ".npm"
   ]
 }
