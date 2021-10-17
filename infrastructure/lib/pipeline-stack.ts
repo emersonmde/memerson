@@ -154,7 +154,7 @@ export class PipelineStack extends cdk.Stack {
         }),
         new codepipeline_actions.CloudFormationCreateUpdateStackAction({
           actionName: 'Lambda_CFN_Deploy',
-          templatePath: cdkBuildOutput.atPath('LambdaStack.template.json'),
+          templatePath: cdkBuildOutput.atPath('MemersonLambdaStack.template.json'),
           stackName: 'LambdaDeploymentStack',
           adminPermissions: true,
           parameterOverrides: {
