@@ -7,8 +7,9 @@ import * as lambda from '@aws-cdk/aws-lambda';
 import { RemovalPolicy } from '@aws-cdk/core';
 
 export interface PipelineStackProps extends cdk.StackProps {
-  autoDeployedStacks?: string[];
-  websiteAssetsBucket: s3.Bucket;
+  readonly autoDeployedStacks?: string[];
+  readonly websiteAssetsBucket: s3.Bucket;
+  readonly lambdaStackId: string;
   readonly lambdaCode: lambda.CfnParametersCode;
 }
 
@@ -16,11 +17,8 @@ export class PipelineStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: PipelineStackProps) {
     super(scope, id, props);
 
-    let autoDeployedStacks: string[] = [id];
-    if (props.autoDeployedStacks) {
-      autoDeployedStacks.push.apply(autoDeployedStacks, props.autoDeployedStacks);
-    }
 
+    let autoDeployedStacks: string[] = props.autoDeployedStacks ? props.autoDeployedStacks : [];
     const cdkBuild = new codebuild.PipelineProject(this, 'CdkBuild', {
       buildSpec: codebuild.BuildSpec.fromObject({
         version: '0.2',
@@ -41,8 +39,8 @@ export class PipelineStack extends cdk.Stack {
         artifacts: {
           'base-directory': 'infrastructure/dist',
           files: [
-            'MemersonLambdaStack.template.json',
-            ...autoDeployedStacks.map((stack: string) => stack + '.template.json')
+            `${props.lambdaStackId}.template.json`,
+            ...autoDeployedStacks.map((stack: string) => `${stack}.template.json`)
           ]
         },
       }),
@@ -79,7 +77,7 @@ export class PipelineStack extends cdk.Stack {
       },
     });
 
-    const reactBuildProject = new codebuild.PipelineProject(this, 'reactBuild', {
+    const reactBuildProject = new codebuild.PipelineProject(this, 'ReactBuild', {
       buildSpec: codebuild.BuildSpec.fromSourceFilename('buildspec.yml'),
       environment: {
         buildImage: codebuild.LinuxBuildImage.STANDARD_5_0,
@@ -87,14 +85,14 @@ export class PipelineStack extends cdk.Stack {
       }
     })
 
-    const artifactBucket = new s3.Bucket(this, 'reactPipelineArtifactBucket', {
+    const artifactBucket = new s3.Bucket(this, 'MemersonPipelineArtifactBucket', {
       removalPolicy: RemovalPolicy.DESTROY
     })
 
 
     const sourceOutput = new codepipeline.Artifact();
     const reactBuildOutput = new codepipeline.Artifact('ReactBuildOutput');
-    const cdkBuildOutput = new codepipeline.Artifact('CdkBuildOutput');
+    const cdkBuildOutput = new codepipeline.Artifact('CDKBuildOutput');
     const lambdaBuildOutput = new codepipeline.Artifact('LambdaBuildOutput');
 
 
@@ -108,7 +106,7 @@ export class PipelineStack extends cdk.Stack {
       stageName: 'Source',
       actions: [
         new codepipeline_actions.GitHubSourceAction({
-          actionName: 'GitHub_Source',
+          actionName: 'GitHubSource',
           owner: 'emersonmde',
           repo: 'memerson',
           oauthToken: cdk.SecretValue.secretsManager("github-access-token", {
@@ -124,19 +122,19 @@ export class PipelineStack extends cdk.Stack {
       stageName: 'Build',
       actions: [
         new codepipeline_actions.CodeBuildAction({
-          actionName: 'ReactBuild',
+          actionName: 'React',
           project: reactBuildProject,
           input: sourceOutput,
           outputs: [reactBuildOutput]
         }),
         new codepipeline_actions.CodeBuildAction({
-          actionName: 'Lambda_Build',
+          actionName: 'Lambda',
           project: lambdaBuild,
           input: sourceOutput,
           outputs: [lambdaBuildOutput],
         }),
         new codepipeline_actions.CodeBuildAction({
-          actionName: 'CDK_Build',
+          actionName: 'CDK',
           project: cdkBuild,
           input: sourceOutput,
           outputs: [cdkBuildOutput],
@@ -144,18 +142,25 @@ export class PipelineStack extends cdk.Stack {
       ],
     });
 
-    const deployStage = pipeline.addStage({
-      stageName: 'Deploy',
+    pipeline.addStage({
+      stageName: 'DeployPipeline',
       actions: [
-        new codepipeline_actions.S3DeployAction({
-          actionName: 'DeployReactApp',
-          input: reactBuildOutput,
-          bucket: props.websiteAssetsBucket
-        }),
         new codepipeline_actions.CloudFormationCreateUpdateStackAction({
-          actionName: 'Lambda_CFN_Deploy',
+          actionName: 'Pipeline',
+          templatePath: cdkBuildOutput.atPath(`${id}.template.json`),
+          stackName: id,
+          adminPermissions: true,
+        }),
+      ]
+    });
+
+    const cdkDeployStage = pipeline.addStage({
+      stageName: 'DeployCDK',
+      actions: [
+        new codepipeline_actions.CloudFormationCreateUpdateStackAction({
+          actionName: 'LambdaStack',
           templatePath: cdkBuildOutput.atPath('MemersonLambdaStack.template.json'),
-          stackName: 'LambdaDeploymentStack',
+          stackName: 'MemersonLambdaStack',
           adminPermissions: true,
           parameterOverrides: {
             ...props.lambdaCode.assign(lambdaBuildOutput.s3Location),
@@ -166,12 +171,23 @@ export class PipelineStack extends cdk.Stack {
     });
 
     autoDeployedStacks.forEach((stack: string) => {
-      deployStage.addAction(new codepipeline_actions.CloudFormationCreateUpdateStackAction({
-        actionName: stack + '_CFN_Deploy',
-        templatePath: cdkBuildOutput.atPath(stack + '.template.json'),
+      cdkDeployStage.addAction(new codepipeline_actions.CloudFormationCreateUpdateStackAction({
+        actionName: `${stack}Stack`,
+        templatePath: cdkBuildOutput.atPath(`${stack}.template.json`),
         stackName: stack,
         adminPermissions: true,
       }));
+    });
+
+    pipeline.addStage({
+      stageName: 'DeployReact',
+      actions: [
+        new codepipeline_actions.S3DeployAction({
+          actionName: 'DeployReact',
+          input: reactBuildOutput,
+          bucket: props.websiteAssetsBucket
+        }),
+      ]
     });
   }
 }
