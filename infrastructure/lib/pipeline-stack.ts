@@ -45,7 +45,8 @@ export class PipelineStack extends cdk.Stack {
       }),
       environment: {
         buildImage: codebuild.LinuxBuildImage.STANDARD_5_0,
-        computeType: codebuild.ComputeType.SMALL
+        computeType: codebuild.ComputeType.SMALL,
+        privileged: true
       },
     });
 
@@ -109,15 +110,7 @@ export class PipelineStack extends cdk.Stack {
     });
 
     const deployStage = pipeline.addStage({
-      stageName: 'DeployPipeline',
-      actions: [
-        new codepipeline_actions.CloudFormationCreateUpdateStackAction({
-          actionName: 'Pipeline',
-          templatePath: cdkBuildOutput.atPath(`${id}.template.json`),
-          stackName: id,
-          adminPermissions: true,
-        }),
-      ]
+      stageName: 'DeployCDK',
     });
 
     autoDeployedStacks.forEach((stack: string) => {
