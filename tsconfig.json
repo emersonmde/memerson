@@ -7,6 +7,7 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "checkJs": true,
     "forceConsistentCasingInFileNames": true,
     "lib": [
       "dom",
