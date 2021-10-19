@@ -9,16 +9,16 @@ import { RemovalPolicy } from '@aws-cdk/core';
 export interface PipelineStackProps extends cdk.StackProps {
   readonly autoDeployedStacks?: string[];
   readonly websiteAssetsBucket: s3.Bucket;
-  readonly lambdaStackId: string;
-  readonly lambdaCode: lambda.CfnParametersCode;
 }
 
 export class PipelineStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: PipelineStackProps) {
     super(scope, id, props);
 
+    let autoDeployedStacks: string[] = [id];
+    props.autoDeployedStacks?.forEach((stack: string) => autoDeployedStacks.push(stack));
 
-    let autoDeployedStacks: string[] = props.autoDeployedStacks ? props.autoDeployedStacks : [];
+    // let autoDeployedStacks: string[] = props.autoDeployedStacks ? props.autoDeployedStacks : [];
     const cdkBuild = new codebuild.PipelineProject(this, 'CdkBuild', {
       buildSpec: codebuild.BuildSpec.fromObject({
         version: '0.2',
@@ -26,20 +26,19 @@ export class PipelineStack extends cdk.Stack {
           install: {
             commands: [
               'cd infrastructure',
-              'npm install',
+              'npm ci',
             ]
           },
           build: {
             commands: [
               'npm run build',
-              'npm run cdk synth -- -o dist'
+              'npx cdk synth'
             ],
           },
         },
         artifacts: {
-          'base-directory': 'infrastructure/dist',
+          'base-directory': 'infrastructure/cdk.out',
           files: [
-            `${props.lambdaStackId}.template.json`,
             ...autoDeployedStacks.map((stack: string) => `${stack}.template.json`)
           ]
         },
@@ -50,32 +49,6 @@ export class PipelineStack extends cdk.Stack {
       },
     });
 
-    const lambdaBuild = new codebuild.PipelineProject(this, 'LambdaBuild', {
-      buildSpec: codebuild.BuildSpec.fromObject({
-        version: '0.2',
-        phases: {
-          install: {
-            commands: [
-              'cd lambda',
-              'npm install',
-            ],
-          },
-          build: {
-            commands: 'npm run build',
-          },
-        },
-        artifacts: {
-          'base-directory': 'lambda',
-          files: [
-            'index.js',
-            'node_modules/**/*',
-          ],
-        },
-      }),
-      environment: {
-        buildImage: codebuild.LinuxBuildImage.STANDARD_2_0,
-      },
-    });
 
     const reactBuildProject = new codebuild.PipelineProject(this, 'ReactBuild', {
       buildSpec: codebuild.BuildSpec.fromSourceFilename('buildspec.yml'),
@@ -93,7 +66,6 @@ export class PipelineStack extends cdk.Stack {
     const sourceOutput = new codepipeline.Artifact();
     const reactBuildOutput = new codepipeline.Artifact('ReactBuildOutput');
     const cdkBuildOutput = new codepipeline.Artifact('CDKBuildOutput');
-    const lambdaBuildOutput = new codepipeline.Artifact('LambdaBuildOutput');
 
 
     // https://docs.aws.amazon.com/cdk/latest/guide/codepipeline_example.html
@@ -128,12 +100,6 @@ export class PipelineStack extends cdk.Stack {
           outputs: [reactBuildOutput]
         }),
         new codepipeline_actions.CodeBuildAction({
-          actionName: 'Lambda',
-          project: lambdaBuild,
-          input: sourceOutput,
-          outputs: [lambdaBuildOutput],
-        }),
-        new codepipeline_actions.CodeBuildAction({
           actionName: 'CDK',
           project: cdkBuild,
           input: sourceOutput,
@@ -142,7 +108,7 @@ export class PipelineStack extends cdk.Stack {
       ],
     });
 
-    pipeline.addStage({
+    const deployStage = pipeline.addStage({
       stageName: 'DeployPipeline',
       actions: [
         new codepipeline_actions.CloudFormationCreateUpdateStackAction({
@@ -154,24 +120,8 @@ export class PipelineStack extends cdk.Stack {
       ]
     });
 
-    const cdkDeployStage = pipeline.addStage({
-      stageName: 'DeployCDK',
-      actions: [
-        new codepipeline_actions.CloudFormationCreateUpdateStackAction({
-          actionName: 'LambdaStack',
-          templatePath: cdkBuildOutput.atPath('MemersonLambdaStack.template.json'),
-          stackName: 'MemersonLambdaStack',
-          adminPermissions: true,
-          parameterOverrides: {
-            ...props.lambdaCode.assign(lambdaBuildOutput.s3Location),
-          },
-          extraInputs: [lambdaBuildOutput],
-        }),
-      ]
-    });
-
     autoDeployedStacks.forEach((stack: string) => {
-      cdkDeployStage.addAction(new codepipeline_actions.CloudFormationCreateUpdateStackAction({
+      deployStage.addAction(new codepipeline_actions.CloudFormationCreateUpdateStackAction({
         actionName: `${stack}Stack`,
         templatePath: cdkBuildOutput.atPath(`${stack}.template.json`),
         stackName: stack,
