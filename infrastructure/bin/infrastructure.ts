@@ -27,4 +27,5 @@ const app = new cdk.App();
 //   lambdaStackId: lambdaStack.stackId,
 //   lambdaCode: lambdaStack.lambdaCode,
 // });
+
 new CdkPipelineStack(app, 'MemersonCdkPipelineStack', {});
