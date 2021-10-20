@@ -3,6 +3,9 @@ import * as cognito from '@aws-cdk/aws-cognito';
 import * as iam from '@aws-cdk/aws-iam';
 
 export class CognitoStack extends cdk.Stack {
+  readonly unauthenticatedRole: iam.Role;
+  readonly authenticatedRole: iam.Role;
+
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
@@ -102,7 +105,7 @@ export class CognitoStack extends cdk.Stack {
       ],
     });
 
-    const unauthenticatedRole = new iam.Role(this, 'MemersonUnauthenticatedRole', {
+    this.unauthenticatedRole = new iam.Role(this, 'MemersonUnauthenticatedRole', {
       description: 'Default role for unauthenticated users',
       assumedBy: new iam.FederatedPrincipal(
         'cognito-identity.amazonaws.com',
@@ -119,7 +122,7 @@ export class CognitoStack extends cdk.Stack {
     },
     );
 
-    const authenticatedRole = new iam.Role(this, 'MemersonAuthenticatedRole', {
+    this.authenticatedRole = new iam.Role(this, 'MemersonAuthenticatedRole', {
       description: 'Default role for authenticated users',
       assumedBy: new iam.FederatedPrincipal(
         'cognito-identity.amazonaws.com',
@@ -146,8 +149,8 @@ export class CognitoStack extends cdk.Stack {
       {
         identityPoolId: identityPool.ref,
         roles: {
-          authenticated: authenticatedRole.roleArn,
-          unauthenticated: unauthenticatedRole.roleArn,
+          authenticated: this.authenticatedRole.roleArn,
+          unauthenticated: this.unauthenticatedRole.roleArn,
         },
         roleMappings: {
           mapping: {

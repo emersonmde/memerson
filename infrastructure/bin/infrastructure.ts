@@ -6,6 +6,7 @@ import { CognitoStack } from '../lib/cognito-stack';
 import { LambdaStack } from '../lib/lambda-stack';
 import { CdkPipelineStack } from '../lib/cdk-pipeline-stack';
 import { PipelineStack } from '../lib/pipeline-stack';
+import { S3Stack } from '../lib/s3-stack';
 
 const app = new cdk.App();
 const route53Stack = new Route53Stack(app, 'MemersonRoute53Stack', {});
@@ -16,6 +17,11 @@ const cloudfrontStack = new CloudFrontStack(app, 'MemersonCloudFrontStack', {
 });
 
 const cognitoStack = new CognitoStack(app, 'MemersonCognitoStack', {});
+
+new S3Stack(app, 'MemersonS3Stack', {
+  unauthenticatedRole: cognitoStack.unauthenticatedRole,
+  authenticatedRole: cognitoStack.authenticatedRole
+});
 
 const autoDeployedStages: string[] = [];
 
