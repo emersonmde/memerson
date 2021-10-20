@@ -15,12 +15,9 @@ const cloudfrontStack = new CloudFrontStack(app, 'MemersonCloudFrontStack', {
   certificate: route53Stack.certificate
 });
 
-// const cognitoStack = new CognitoStack(app, 'MemersonCognitoStack', {});
+const cognitoStack = new CognitoStack(app, 'MemersonCognitoStack', {});
 
-// const lambdaStack = new LambdaStack(app, 'MemersonLambdaStack', {});
-
-const autoDeployedStages: string[] = [
-];
+const autoDeployedStages: string[] = [];
 
 new PipelineStack(app, 'MemersonReactPipelineStack', {
   autoDeployedStacks: autoDeployedStages,
