@@ -15,6 +15,26 @@ export class S3Stack extends cdk.Stack {
 
         const photosBucket = new s3.Bucket(this, 'MemersonPhotos', {
             bucketName: 'memerson-photos',
+            cors: [
+                {
+                    allowedMethods: [
+                        s3.HttpMethods.GET,
+                        s3.HttpMethods.POST,
+                        s3.HttpMethods.PUT,
+                        s3.HttpMethods.HEAD,
+                        s3.HttpMethods.DELETE,
+                    ],
+                    allowedOrigins: ['*'],
+                    allowedHeaders: ['*'],
+                    exposedHeaders: [
+                        'x-amz-server-side-encryption',
+                        'x-amz-request-id',
+                        'x-amz-id-2',
+                        'ETag',
+                    ],
+                    maxAge: 3000
+                },
+            ],
 
         })
 
