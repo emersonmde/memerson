@@ -38,7 +38,7 @@ export class S3Stack extends cdk.Stack {
 
         })
 
-        photosBucket.grantReadWrite(props.unauthenticatedRole);
+        photosBucket.grantRead(props.unauthenticatedRole);
         photosBucket.grantReadWrite(props.authenticatedRole);
     }
 }
