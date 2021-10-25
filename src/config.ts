@@ -1,4 +1,5 @@
-export default {
+
+const config = {
     cognito: {
       REGION: 'us-east-1',
       USER_POOL_ID: 'us-east-1_BESaB3lKZ',
@@ -6,3 +7,4 @@ export default {
       IDENTITY_POOL_ID: 'us-east-1:db240c14-2a7c-4d0d-b25b-a2235cfaca26',
     }
   };
+  export default config;

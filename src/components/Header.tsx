@@ -1,4 +1,4 @@
-import { AppBar, Toolbar, Typography, Button, Icon } from "@material-ui/core";
+import { AppBar, Toolbar, Typography, Button } from "@material-ui/core";
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from "react-router-dom";
 import ArchiveIcon from '@material-ui/icons/Archive';
