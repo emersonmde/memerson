@@ -31,6 +31,8 @@ export class S3Stack extends cdk.Stack {
                         'x-amz-request-id',
                         'x-amz-id-2',
                         'ETag',
+                        'x-amz-meta-height',
+                        'x-amz-meta-width'
                     ],
                     maxAge: 3000
                 },
