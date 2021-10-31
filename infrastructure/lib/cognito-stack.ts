@@ -5,6 +5,8 @@ import * as iam from '@aws-cdk/aws-iam';
 export class CognitoStack extends cdk.Stack {
   readonly unauthenticatedRole: iam.Role;
   readonly authenticatedRole: iam.Role;
+  readonly userPool: cognito.UserPool;
+  readonly userPoolClient: cognito.UserPoolClient;
 
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
@@ -163,6 +165,9 @@ export class CognitoStack extends cdk.Stack {
         },
       },
     );
+
+    this.userPool = userPool;
+    this.userPoolClient = userPoolClient;
 
     new cdk.CfnOutput(this, 'userPoolId', {
       value: userPool.userPoolId,

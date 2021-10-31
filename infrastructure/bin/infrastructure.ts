@@ -3,7 +3,7 @@ import * as cdk from '@aws-cdk/core';
 import { Route53Stack } from '../lib/route53-stack';
 import { CloudFrontStack } from '../lib/cloudfront-stack';
 import { CognitoStack } from '../lib/cognito-stack';
-import { LambdaStack } from '../lib/lambda-stack';
+import { ApiStack } from '../lib/api-stack';
 import { CdkPipelineStack } from '../lib/cdk-pipeline-stack';
 import { PipelineStack } from '../lib/pipeline-stack';
 import { S3Stack } from '../lib/s3-stack';
@@ -23,6 +23,11 @@ new S3Stack(app, 'MemersonS3Stack', {
   authenticatedRole: cognitoStack.authenticatedRole
 });
 
+new ApiStack(app, 'MemersonApiStack', {
+  userPool: cognitoStack.userPool,
+  userPoolClient: cognitoStack.userPoolClient
+});
+
 const autoDeployedStages: string[] = [];
 
 new PipelineStack(app, 'MemersonReactPipelineStack', {
@@ -30,4 +35,4 @@ new PipelineStack(app, 'MemersonReactPipelineStack', {
   websiteAssetsBucket: cloudfrontStack.assetsBucket,
 });
 
-new CdkPipelineStack(app, 'MemersonCdkPipelineStack', {});
+// new CdkPipelineStack(app, 'MemersonCdkPipelineStack', {});
