@@ -28,6 +28,7 @@ export default class Photos extends React.Component<{}, { photos: Array<any>, ph
     API
       .get(apiName, path, params)
       .then(response => {
+        console.debug('ListPhotos API Response: ', JSON.stringify(response, undefined, 2));
         const photos = response.data
           .filter((photo: any) => (photo.filename.includes('-20_')))
           // .filter((photo: any) => (photo.aspect_ratio_width && photo.aspect_ratio_height))
@@ -38,6 +39,7 @@ export default class Photos extends React.Component<{}, { photos: Array<any>, ph
               width: photo.width
             };
           });
+        console.debug(`Found ${photos.length} photos`);
         this.setState({ photosList: photos });
       })
       .catch(error => {
