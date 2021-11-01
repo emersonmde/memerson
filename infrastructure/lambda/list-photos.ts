@@ -54,14 +54,17 @@ export async function handler(event: APIGatewayProxyEventV2): Promise<APIGateway
         Bucket: bucketName
     }).promise()
 
-    const photos = await Promise.all(results!.map((result: any) => generateUrl(result)))
+    const photos = await Promise.all(results!
+      .filter((result: S3.Object) => result.Key?.includes('-20_'))
+      .map((result: S3.Object) => generateUrl(result)))
+
     console.log('photos', JSON.stringify(photos, null, 2))
 
     return {
         statusCode: 200,
         headers: {
           "Access-Control-Allow-Headers" : 'Content-Type',
-          "Access-Control-Allow-Origin": 'http://localhost:3000',
+          "Access-Control-Allow-Origin": event.headers.origin || 'https://memerson.net',
           "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
         },
         body: JSON.stringify(photos)
