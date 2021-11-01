@@ -14,7 +14,6 @@ export default class Photos extends React.Component<{}, { photos: Array<any>, ph
   }
 
   componentDidMount() {
-
     const apiName = 'MemersonApi';
     const path = '/photos';
     const params = { // OPTIONAL

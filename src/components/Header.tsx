@@ -35,7 +35,7 @@ export default function Header() {
                         About
                     </Button>
                     <Button variant="text" color="inherit" component={Link} to="/photos">
-                        Photos
+                        Photography
                     </Button>
                 </div>
             </Toolbar>

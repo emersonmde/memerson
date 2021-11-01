@@ -10,7 +10,9 @@ export default class Home extends React.Component<{}, {}> {
 
   render() {
     return (
-      <Typography variant='h5'>Hey</Typography>
+      <p>
+        <pre>Unfortunately, this is probably not what you're looking for.</pre>
+      </p>
     );
   }
 }
