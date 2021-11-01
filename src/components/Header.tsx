@@ -22,7 +22,6 @@ export default function Header() {
     return (
         <AppBar position="static" className={classes.root}>
             <Toolbar className="header">
-                <ArchiveIcon />
                 <Typography variant="h5">
                     Matthew Emerson
                 </Typography>
