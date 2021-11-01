@@ -28,16 +28,14 @@ export default class Photos extends React.Component<{}, { photos: Array<any>, ph
     API
       .get(apiName, path, params)
       .then(response => {
-        console.log('API RESPONSE', JSON.stringify(response.data, undefined, 2));
         const photos = response.data
           .filter((photo: any) => (photo.filename.includes('-20_')))
-          .filter((photo: any) => (photo.aspect_ratio_width && photo.aspect_ratio_height))
+          // .filter((photo: any) => (photo.aspect_ratio_width && photo.aspect_ratio_height))
           .map((photo: any) => {
-            console.log('width', photo.aspect_ratio_width, ' height ', photo.aspect_ratio_height);
             return {
               src: photo.url,
-              height: photo.aspect_ratio_height,
-              width: photo.aspect_ratio_width
+              height: photo.height,
+              width: photo.width
             };
           });
         this.setState({ photosList: photos });
