@@ -30,6 +30,10 @@ export default function About() {
         <Typography paragraph>
           The "thought process" of the missile is as follows: because a variation has modified some of the information which the missile has obtained, it is not sure where it is. However, it is sure where it isn't ! (within reason) and it knows DAMN sure where it was and also where it wasn't. It now subtracts where it should be from where it wasn't (or vice versa) and by differentiating this with the algebraic difference between where it shouldn't be and where it was, it is able to obtain the difference between its deviations and its variations....which is called the ERROR SIGNAL.
         </Typography>
+
+        <Typography paragraph align="right">
+          - Somebody
+        </Typography>
       </Typography>
     </Container>
   )

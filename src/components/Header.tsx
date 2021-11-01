@@ -23,7 +23,7 @@ export default function Header() {
         <AppBar position="static" className={classes.root}>
             <Toolbar className="header">
                 <Typography variant="h5">
-                    Matthew Emerson
+                    Error Signal
                 </Typography>
 
                 <div className={classes.menuButton}>
