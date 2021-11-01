@@ -34,6 +34,9 @@ export default function Header() {
                     <Button variant="text" color="inherit" component={Link} to="/about">
                         About
                     </Button>
+                    <Button variant="text" color="inherit" component={Link} to="/photos">
+                        Photos
+                    </Button>
                 </div>
             </Toolbar>
         </AppBar>

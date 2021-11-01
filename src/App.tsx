@@ -21,12 +21,20 @@ Amplify.configure({
       region: 'us-east-1',
       identityPoolId: config.cognito.IDENTITY_POOL_ID,
     }
+  },
+  API: {
+    endpoints: [
+      {
+        name: 'MemersonApi',
+        endpoint: 'https://vuur8lm1w3.execute-api.us-east-1.amazonaws.com/dev/'
+      },
+    ]
   }
 });
 
 const useStyles = makeStyles(theme => ({
   root: {
-      background: theme.palette.background.default
+    background: theme.palette.background.default
   },
 }));
 
