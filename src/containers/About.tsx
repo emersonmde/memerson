@@ -1,4 +1,4 @@
-import { Container, makeStyles, Typography } from "@material-ui/core";
+import { Container, Link, makeStyles, Typography } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -32,7 +32,12 @@ export default function About() {
         </Typography>
 
         <Typography paragraph align="right">
-          - Somebody
+          - <Link
+            href="http://www.mace-b.com/38tmw/missiles/Mace_B_IG.htm"
+            color="inherit"
+            underline="always"
+            target="_blank"
+            rel="noopener">Somebody</Link>
         </Typography>
       </Typography>
     </Container>

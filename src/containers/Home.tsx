@@ -15,7 +15,7 @@ export default class Home extends React.Component<{}, {}> {
   render() {
     return (
       <div style={this.textStyle}>
-        <pre>Unfortunately, this is probably not what you're looking for.</pre>
+        <pre>Unfortunately, this isn't what you're looking for.</pre>
       </div>
     );
   }

@@ -1,14 +1,15 @@
+import { Grid } from '@material-ui/core';
 import { API } from 'aws-amplify';
 import React from "react";
+import Loader from 'react-loader-spinner';
 import Gallery from "react-photo-gallery";
 
 
 
-export default class Photos extends React.Component<{}, { photos: Array<any>, photosList: Array<any> }> {
+export default class Photos extends React.Component<{}, { photosList: Array<any> }> {
   constructor(props: {}) {
     super(props);
     this.state = {
-      photos: [],
       photosList: []
     }
   }
@@ -48,9 +49,17 @@ export default class Photos extends React.Component<{}, { photos: Array<any>, ph
 
   render() {
     return (
-      <div>
-        <Gallery photos={this.state.photosList} />;
-      </div>
+      <Grid container justifyContent="center">
+        {this.state.photosList && this.state.photosList.length > 0
+          ? <Gallery photos={this.state.photosList} />
+          : <Loader
+            type="Audio"
+            color="#202124"
+            height={100}
+            width={100}
+            timeout={3000} // 3 seconds
+          />}
+      </Grid>
     );
   }
 }
