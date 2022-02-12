@@ -6,7 +6,7 @@ const bucketName = 'memerson-api-photos'
 const s3 = new S3();
 
 // TODO: Used gcd to caluclate aspect ratio
-// TODO: return aspect ratio in additon to width and height
+// TODO: return aspect ratio in addition to width and height
 const gcd = (...arr: number[]): number => {
   const _gcd = (x: number, y: number): number => (!y ? x : gcd(y, x % y));
   return [...arr].reduce((a, b) => _gcd(a, b));
