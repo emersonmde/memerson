@@ -88,20 +88,6 @@ export class Route53Stack extends cdk.Stack {
             validation: certificatemanager.CertificateValidation.fromDns(this.hostedZone),
         });
 
-        // new route53.MxRecord(this, 'MemersonDevMxRecord', {
-        //     zone: memersonDevHostedZone,
-        //     values: [
-        //         {
-        //             hostName: 'mail.protonmail.ch',
-        //             priority: 10
-        //         },
-        //         {
-        //             hostName: 'mailsec.protonmail.ch',
-        //             priority: 20
-        //         },
-        //     ]
-        // });
-
         const memersonDevNameservers = this.hostedZone.hostedZoneNameServers as string[];
         new cdk.CfnOutput(this, 'MemersonDevNameServers', {value: cdk.Fn.join(',', memersonDevNameservers)});
     }
