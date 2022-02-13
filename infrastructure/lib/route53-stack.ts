@@ -1,6 +1,7 @@
 import * as cdk from '@aws-cdk/core';
 import * as route53 from '@aws-cdk/aws-route53';
 import * as certificatemanager from '@aws-cdk/aws-certificatemanager'
+import {Duration} from "@aws-cdk/core";
 
 
 export class Route53Stack extends cdk.Stack {
@@ -36,22 +37,24 @@ export class Route53Stack extends cdk.Stack {
         //     zoneName: 'test.memerson.net',
         // });
 
-        new route53.TxtRecord(this, 'MemersonTxtRecord', {
+        new route53.TxtRecord(this, 'MemersonNetTxtRecord', {
             zone: this.hostedZone,
             recordName: '',
             values: [
-                'protonmail-verification=12f676345e1db386f504a9bbd2b52ce906a3ccdd',
-                'v=spf1 include:_spf.protonmail.ch mx ~all',
+                'hey-verification:CTeRPLx7npx9uiEP7x9b8xL9',
+                'v=spf1 include:_spf.hey.com ~all'
             ],
+            ttl: Duration.hours(1)
         });
 
-        // new route53.TxtRecord(this, 'ProtonMailDmarcRecord', {
-        //     zone: this.hostedZone,
-        //     recordName: '_dmarc',
-        //     values: [
-        //         'v=DMARC1; p=none; rua=mailto:mail@memerson.net',
-        //     ],
-        // });
+        new route53.TxtRecord(this, 'MemersonNetDmarcRecord', {
+            zone: this.hostedZone,
+            recordName: '_dmarc',
+            values: [
+                'v=DMARC1; p=none;',
+            ],
+            ttl: Duration.hours(1)
+        });
 
         new route53.MxRecord(this, 'ProtonMailMxRecord', {
             zone: this.hostedZone,
