@@ -56,18 +56,15 @@ export class Route53Stack extends cdk.Stack {
             ttl: Duration.hours(1)
         });
 
-        new route53.MxRecord(this, 'ProtonMailMxRecord', {
+        new route53.MxRecord(this, 'MemersonNetMxRecord', {
             zone: this.hostedZone,
             values: [
                 {
-                    hostName: 'mail.protonmail.ch',
+                    hostName: 'work-mx.app.hey.com',
                     priority: 10
                 },
-                {
-                    hostName: 'mailsec.protonmail.ch',
-                    priority: 20
-                },
-            ]
+            ],
+            ttl: Duration.hours(1)
         });
 
         new route53.CnameRecord(this, 'MemersonNetHeyDomainKey', {
@@ -75,25 +72,6 @@ export class Route53Stack extends cdk.Stack {
             recordName: 'heymail._domainkey',
             domainName: 'heymail._domainkey.hey.com.',
             ttl: Duration.hours(1)
-        });
-
-
-        new route53.CnameRecord(this, 'ProtonMailDkimRecord1', {
-            zone: this.hostedZone,
-            recordName: 'protonmail._domainkey',
-            domainName: 'protonmail.domainkey.dbmqw4ugiuaymzfaa65feupnggq2i3kjd36pe4soqavlqlozij64a.domains.proton.ch.'
-        });
-
-        new route53.CnameRecord(this, 'ProtonMailDkimRecord2', {
-            zone: this.hostedZone,
-            recordName: 'protonmail2._domainkey',
-            domainName: 'protonmail2.domainkey.dbmqw4ugiuaymzfaa65feupnggq2i3kjd36pe4soqavlqlozij64a.domains.proton.ch.'
-        });
-
-        new route53.CnameRecord(this, 'ProtonMailDkimRecord3', {
-            zone: this.hostedZone,
-            recordName: 'protonmail3._domainkey',
-            domainName: 'protonmail3.domainkey.dbmqw4ugiuaymzfaa65feupnggq2i3kjd36pe4soqavlqlozij64a.domains.proton.ch.'
         });
 
         const memersonNetNameservers = this.hostedZone.hostedZoneNameServers as string[];
