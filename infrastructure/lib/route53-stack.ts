@@ -37,7 +37,7 @@ export class Route53Stack extends cdk.Stack {
         //     zoneName: 'test.memerson.net',
         // });
 
-        new route53.TxtRecord(this, 'MemersonNetTxtRecord', {
+        new route53.TxtRecord(this, 'MemersonTxtRecord', {
             zone: this.hostedZone,
             recordName: '',
             values: [
@@ -70,12 +70,19 @@ export class Route53Stack extends cdk.Stack {
             ]
         });
 
+        new route53.CnameRecord(this, 'MemersonNetHeyDomainKey', {
+            zone: this.hostedZone,
+            recordName: 'heymail._domainkey',
+            domainName: 'heymail._domainkey.hey.com.',
+            ttl: Duration.hours(1)
+        });
+
+
         new route53.CnameRecord(this, 'ProtonMailDkimRecord1', {
             zone: this.hostedZone,
             recordName: 'protonmail._domainkey',
             domainName: 'protonmail.domainkey.dbmqw4ugiuaymzfaa65feupnggq2i3kjd36pe4soqavlqlozij64a.domains.proton.ch.'
         });
-
 
         new route53.CnameRecord(this, 'ProtonMailDkimRecord2', {
             zone: this.hostedZone,
