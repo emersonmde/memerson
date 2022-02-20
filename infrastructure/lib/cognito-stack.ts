@@ -13,7 +13,7 @@ export class CognitoStack extends cdk.Stack {
 
     const userPool = new cognito.UserPool(this, 'UserPool', {
       userPoolName: 'memerson-net-user-pool',
-      selfSignUpEnabled: true,
+      selfSignUpEnabled: false,
       signInAliases: {
         email: true,
       },
