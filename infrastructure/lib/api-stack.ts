@@ -19,20 +19,7 @@ export class ApiStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: ApiStackProps) {
     super(scope, id, props);
 
-    const photosBucket = new s3.Bucket(this, 'MemersonApiPhotos', {
-      bucketName: 'memerson-api-photos',
-    })
 
-    const lambdaName = 'MemersonApiListPhotos'
-    const listPhotosLambda = new lambda_nodejs.NodejsFunction(this, lambdaName, {
-      functionName: lambdaName,
-      runtime: lambda.Runtime.NODEJS_14_X,
-      projectRoot: join(__dirname, '..'),
-      entry: join(__dirname, '..', 'lambda', 'list-photos.ts'),
-      bundling: {
-        nodeModules: []
-      }
-    });
 
     const api = new apigateway.RestApi(this, 'MemersonApi', {
       restApiName: 'MemersonApi',
@@ -53,8 +40,26 @@ export class ApiStack extends cdk.Stack {
         allowOrigins: ['http://localhost:3000', 'https://memerson.net'],
       },
     });
-    photosBucket.grantReadWrite(listPhotosLambda);
 
+    const authorizer = new apigateway.CognitoUserPoolsAuthorizer(this, 'cognitoAuthorizer', {
+      cognitoUserPools: [props.userPool]
+    });
+
+    // List Photos
+    const photosBucket = new s3.Bucket(this, 'MemersonApiPhotos', {
+      bucketName: 'memerson-api-photos',
+    })
+    const listPhotosLambdaName = 'MemersonApiListPhotos'
+    const listPhotosLambda = new lambda_nodejs.NodejsFunction(this, listPhotosLambdaName, {
+      functionName: listPhotosLambdaName,
+      runtime: lambda.Runtime.NODEJS_14_X,
+      projectRoot: join(__dirname, '..'),
+      entry: join(__dirname, '..', 'lambda', 'list-photos.ts'),
+      bundling: {
+        nodeModules: []
+      }
+    });
+    photosBucket.grantReadWrite(listPhotosLambda);
 
     const photosApi = api.root.addResource('photos');
     photosApi.addMethod(
@@ -62,6 +67,28 @@ export class ApiStack extends cdk.Stack {
       new apigateway.LambdaIntegration(listPhotosLambda, { proxy: true }),
       { authorizationType: apigateway.AuthorizationType.NONE }
     )
+
+    // Auth Echo
+    const authEchoLambdaName = 'MemersonApiAuthEcho'
+    const authEchoLambda = new lambda_nodejs.NodejsFunction(this, authEchoLambdaName, {
+      functionName: authEchoLambdaName,
+      runtime: lambda.Runtime.NODEJS_14_X,
+      projectRoot: join(__dirname, '..'),
+      entry: join(__dirname, '..', 'lambda', 'auth_echo.ts'),
+      bundling: {
+        nodeModules: []
+      }
+    });
+
+    const authEchoApi = api.root.addResource('auth_echo');
+    authEchoApi.addMethod(
+        'GET',
+        new apigateway.LambdaIntegration(authEchoLambda, { proxy: true }),
+        {
+          authorizer: authorizer,
+          authorizationType: apigateway.AuthorizationType.COGNITO
+        }
+    );
 
     // photosApi.addMethod('OPTIONS', new apigateway.MockIntegration({
     //   integrationResponses: [{
