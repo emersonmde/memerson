@@ -1,5 +1,5 @@
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
+import {makeStyles, ThemeProvider} from '@material-ui/core/styles';
 import Routes from 'Routes';
 import Header from './components/Header';
 import theme from './theme';
@@ -26,7 +26,7 @@ Amplify.configure({
     endpoints: [
       {
         name: 'MemersonApi',
-        endpoint: 'https://vuur8lm1w3.execute-api.us-east-1.amazonaws.com/dev/'
+        endpoint: 'https://knsfeilz9j.execute-api.us-east-1.amazonaws.com/dev/'
       },
     ]
   }
@@ -43,9 +43,9 @@ function App() {
   useStyles();
   return (
     <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Header />
-      <Routes />
+      <CssBaseline/>
+      <Header/>
+      <Routes/>
     </ThemeProvider>
   );
 }

@@ -1,9 +1,8 @@
-import { Grid } from '@material-ui/core';
-import { API } from 'aws-amplify';
+import {Grid} from '@material-ui/core';
+import {API} from 'aws-amplify';
 import React from "react";
 import Loader from 'react-loader-spinner';
 import Gallery from "react-photo-gallery";
-
 
 
 export default class Photos extends React.Component<{}, { photosList: Array<any> }> {
@@ -40,7 +39,7 @@ export default class Photos extends React.Component<{}, { photosList: Array<any>
             };
           });
         console.debug(`Found ${photos.length} photos`);
-        this.setState({ photosList: photos });
+        this.setState({photosList: photos});
       })
       .catch(error => {
         console.log(error.response);
@@ -51,7 +50,7 @@ export default class Photos extends React.Component<{}, { photosList: Array<any>
     return (
       <Grid container justifyContent="center">
         {this.state.photosList && this.state.photosList.length > 0
-          ? <Gallery photos={this.state.photosList} />
+          ? <Gallery photos={this.state.photosList}/>
           : <Loader
             type="Audio"
             color="#202124"

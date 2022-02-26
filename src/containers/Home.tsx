@@ -2,10 +2,10 @@ import React from "react";
 
 export default class Home extends React.Component<{}, {}> {
   readonly textStyle: any;
+
   constructor(props: {}) {
     super(props);
-    this.state = {
-    }
+    this.state = {}
 
     this.textStyle = {
       marginLeft: '10px'
