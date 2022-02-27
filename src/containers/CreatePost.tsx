@@ -3,7 +3,7 @@ import {Authenticator} from "@aws-amplify/ui-react";
 import {Button, Typography} from "@material-ui/core";
 import {API} from "aws-amplify";
 
-export default class Secret extends React.Component<{}, {}> {
+export default class CreatePost extends React.Component<{}, {}> {
   readonly textStyle: any;
 
   constructor(props: {}) {

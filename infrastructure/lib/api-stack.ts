@@ -41,6 +41,7 @@ export class ApiStack extends cdk.Stack {
     // List Photos
     const photosBucket = new s3.Bucket(this, 'MemersonApiPhotos', {
       bucketName: 'memerson-api-photos',
+      publicReadAccess: true
     })
     const listPhotosLambdaName = 'MemersonApiListPhotos'
     const listPhotosLambda = new lambda_nodejs.NodejsFunction(this, listPhotosLambdaName, {
