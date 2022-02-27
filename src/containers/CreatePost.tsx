@@ -1,44 +1,47 @@
-import React from "react";
-import {Authenticator} from "@aws-amplify/ui-react";
+import React, {useState} from "react";
+import {Authenticator, useAuthenticator} from "@aws-amplify/ui-react";
 import {Button, Typography} from "@material-ui/core";
 import {API} from "aws-amplify";
 
-export default class CreatePost extends React.Component<{}, {}> {
-  readonly textStyle: any;
+function CreatePost() {
+  const [response, setResponse] = useState();
 
-  constructor(props: {}) {
-    super(props);
-    this.state = {}
-
-    this.textStyle = {
-      marginLeft: '10px'
-    };
-  }
-
-  async authEcho() {
+  const authEcho = () => {
     const apiName = 'MemersonApi';
     const path = 'auth_echo';
     const params = {
       queryStringParameters: {},
     }
-    const output = await API.get(apiName, path, params);
-    return output;
+
+    API
+      .get(apiName, path, params)
+      .then(response => {
+        setResponse(response);
+      })
+      .catch(error => {
+        console.error(error.response);
+      });
   }
 
-
-  render() {
-    return (
-      <Authenticator>
-        {({signOut, user}) => (
-          <div style={this.textStyle}>
-            <Typography variant="h3">Hello {user?.attributes?.email}</Typography>
-            <Button variant="outlined" onClick={signOut}>Sign Out</Button>
-            <pre>Super secreth. Shhh...</pre>
-            <Button variant="outlined" onClick={() => this.authEcho()}>Auth Echo</Button>
-
-          </div>
-        )}
-      </Authenticator>
-    );
+  const textStyle = {
+    marginLeft: '10px'
   }
+
+  return (
+    <Authenticator>
+      {({signOut, user}) => (
+        <div style={textStyle}>
+          <pre>Wake up, {user?.attributes?.email}...</pre>
+          <Button variant="outlined" onClick={() => authEcho()}>Auth Echo</Button>
+          {response &&
+            <>
+              <Typography variant="h3">Response</Typography>
+              <pre>{JSON.stringify(response)}</pre>
+            </>
+          }
+        </div>
+      )}
+    </Authenticator>
+  );
 }
+export default CreatePost;

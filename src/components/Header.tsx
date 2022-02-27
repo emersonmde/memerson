@@ -1,6 +1,7 @@
 import {AppBar, Button, Toolbar, Typography} from "@material-ui/core";
 import {makeStyles} from '@material-ui/core/styles';
 import {Link} from "react-router-dom";
+import {useAuthenticator} from "@aws-amplify/ui-react";
 
 
 const useStyles = makeStyles(theme => ({
@@ -16,6 +17,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function Header() {
   const classes = useStyles();
+  const { user, signOut } = useAuthenticator((context) => [context.user]);
 
   return (
     <AppBar position="static" className={classes.root}>
@@ -34,6 +36,16 @@ export default function Header() {
           <Button variant="text" color="inherit" component={Link} to="/photos">
             Photography
           </Button>
+          {user &&
+              <>
+                  <Button variant="text" color="inherit" component={Link} to="/create_post">
+                      Create Post
+                  </Button>
+                  <Button variant="text" color="inherit" onClick={() => signOut()}>
+                      Sign Out
+                  </Button>
+              </>
+          }
         </div>
       </Toolbar>
     </AppBar>
