@@ -12,7 +12,7 @@ const gcd = (...arr: number[]): number => {
   return [...arr].reduce((a, b) => _gcd(a, b));
 };
 
-const generateUrl = async (object: S3.Object): Promise<{
+const getMetadata = async (object: S3.Object): Promise<{
   filename: string,
   url: string,
   width: number,
@@ -20,11 +20,7 @@ const generateUrl = async (object: S3.Object): Promise<{
   aspect_ratio_width: number,
   aspect_ratio_height: number
 }> => {
-  const url = await s3.getSignedUrlPromise('getObject', {
-      Bucket: bucketName,
-      Key: object.Key,
-      Expires: (60 * 60),
-  })
+  const url = `https://${bucketName}.s3.amazonaws.com/${object.Key}`;
 
   const regexp = /(?<width>[0-9]+)x(?<height>[0-9]+)/;
   const match = object.Key?.match(regexp)?.groups;
@@ -56,7 +52,7 @@ export async function handler(event: APIGatewayProxyEventV2): Promise<APIGateway
 
     const photos = await Promise.all(results!
       .filter((result: S3.Object) => result.Key?.includes('-20_'))
-      .map((result: S3.Object) => generateUrl(result)))
+      .map((result: S3.Object) => getMetadata(result)))
 
     console.log('photos', JSON.stringify(photos, null, 2))
 
