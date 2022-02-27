@@ -1,19 +1,14 @@
 import {Grid} from '@material-ui/core';
 import {API} from 'aws-amplify';
-import React from "react";
+import React, {useEffect, useState} from "react";
 import Loader from 'react-loader-spinner';
 import Gallery from "react-photo-gallery";
 
 
-export default class Photos extends React.Component<{}, { photosList: Array<any> }> {
-  constructor(props: {}) {
-    super(props);
-    this.state = {
-      photosList: []
-    }
-  }
+function Photos() {
+  const [photosList, setPhotosList] = useState([]);
 
-  componentDidMount() {
+  useEffect(() => {
     const apiName = 'MemersonApi';
     const path = '/photos';
     const params = { // OPTIONAL
@@ -39,26 +34,26 @@ export default class Photos extends React.Component<{}, { photosList: Array<any>
             };
           });
         console.debug(`Found ${photos.length} photos`);
-        this.setState({photosList: photos});
+        setPhotosList(photos);
       })
       .catch(error => {
         console.log(error.response);
       });
-  }
+  }, []);
 
-  render() {
-    return (
-      <Grid container justifyContent="center">
-        {this.state.photosList && this.state.photosList.length > 0
-          ? <Gallery photos={this.state.photosList}/>
-          : <Loader
-            type="Audio"
-            color="#202124"
-            height={100}
-            width={100}
-            timeout={3000} // 3 seconds
-          />}
-      </Grid>
-    );
-  }
+  return (
+    <Grid container justifyContent="center">
+      {photosList && photosList.length > 0
+        ? <Gallery photos={photosList}/>
+        : <Loader
+          type="Audio"
+          color="#202124"
+          height={100}
+          width={100}
+          timeout={3000} // 3 seconds
+        />}
+    </Grid>
+  );
 }
+
+export default Photos;
