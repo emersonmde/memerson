@@ -1,7 +1,13 @@
 import React, {useState} from "react";
-import {Authenticator, useAuthenticator} from "@aws-amplify/ui-react";
-import {Button, Typography} from "@material-ui/core";
+import {Authenticator} from "@aws-amplify/ui-react";
+import {Button, ButtonGroup, Typography} from "@material-ui/core";
 import {API} from "aws-amplify";
+import {Editor, EditorState, RichUtils} from "draft-js";
+import FormatBoldIcon from '@material-ui/icons/FormatBold';
+import { MouseEvent } from 'react';
+import PostEditor from "../components/PostEditor";
+
+
 
 function CreatePost() {
   const [response, setResponse] = useState();
@@ -27,6 +33,7 @@ function CreatePost() {
     marginLeft: '10px'
   }
 
+
   return (
     <Authenticator>
       {({signOut, user}) => (
@@ -34,14 +41,17 @@ function CreatePost() {
           <pre>Wake up, {user?.attributes?.email}...</pre>
           <Button variant="outlined" onClick={() => authEcho()}>Auth Echo</Button>
           {response &&
-            <>
-              <Typography variant="h3">Response</Typography>
-              <pre>{JSON.stringify(response)}</pre>
-            </>
+              <>
+                  <Typography variant="h3">Response</Typography>
+                  <pre>{JSON.stringify(response)}</pre>
+              </>
           }
+          <PostEditor />
+
         </div>
       )}
     </Authenticator>
   );
 }
+
 export default CreatePost;

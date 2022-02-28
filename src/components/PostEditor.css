@@ -1,0 +1,13 @@
+.rdw-dropdownoption-active {
+     background: none;
+}
+.rdw-dropdownoption-highlighted {
+    background: none;
+}
+
+.rdw-dropdown-wrapper:hover {
+    background-color: #282828;
+}
+.rdw-dropdown-optionwrapper:hover {
+    background-color: #303030;
+}
