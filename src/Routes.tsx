@@ -4,6 +4,7 @@ import Photos from "containers/Photos";
 import {Route, Switch} from "react-router-dom";
 import CreatePost from "./containers/CreatePost";
 import SignIn from "./containers/SignIn";
+import PhotosUpload from "./containers/PhotosUpload";
 
 
 export default function Routes() {
@@ -14,6 +15,9 @@ export default function Routes() {
       </Route>
       <Route path="/about">
         <About/>
+      </Route>
+      <Route path="/photos/upload">
+        <PhotosUpload/>
       </Route>
       <Route path="/photos">
         <Photos/>

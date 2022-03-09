@@ -1,5 +1,6 @@
 import {APIGatewayProxyEventV2, APIGatewayProxyResultV2} from 'aws-lambda';
 import {S3} from 'aws-sdk';
+import {HeadObjectRequest} from "aws-sdk/clients/s3";
 
 // const bucketName = process.env.PHOTO_BUCKET_NAME!;
 const bucketName = 'memerson-api-photos'
@@ -24,6 +25,16 @@ const getMetadata = async (object: S3.Object): Promise<{
 
   const regexp = /(?<width>[0-9]+)x(?<height>[0-9]+)/;
   const match = object.Key?.match(regexp)?.groups;
+
+  // const params: HeadObjectRequest = {
+  //   Bucket: bucketName, Key: object.Key!
+  // }
+
+  // const {Metadata: metadata} = s3.headObject(params).promise();
+  // console.log(`Metadata: ${JSON.stringify(metadata)}`);
+  // const width: number = +(metadata!['width'] || match?.width || '3');
+  // const height: number = +(metadata!['height'] || match?.width || '2');
+
 
   const width = +(match?.width || '3');
   const height = +(match?.height || '2');

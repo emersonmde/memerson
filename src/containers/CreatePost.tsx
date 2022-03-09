@@ -1,10 +1,7 @@
 import React, {useState} from "react";
 import {Authenticator} from "@aws-amplify/ui-react";
-import {Button, ButtonGroup, Typography} from "@material-ui/core";
+import {Button, Typography} from "@material-ui/core";
 import {API} from "aws-amplify";
-import {Editor, EditorState, RichUtils} from "draft-js";
-import FormatBoldIcon from '@material-ui/icons/FormatBold';
-import { MouseEvent } from 'react';
 import PostEditor from "../components/PostEditor";
 
 
