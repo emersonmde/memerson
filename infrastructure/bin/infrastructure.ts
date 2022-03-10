@@ -17,7 +17,7 @@ const cloudfrontStack = new CloudFrontStack(app, 'MemersonCloudFrontStack', {
 
 const cognitoStack = new CognitoStack(app, 'MemersonCognitoStack', {});
 
-new S3Stack(app, 'MemersonS3Stack', {
+const s3Stack = new S3Stack(app, 'MemersonS3Stack', {
   unauthenticatedRole: cognitoStack.unauthenticatedRole,
   authenticatedRole: cognitoStack.authenticatedRole
 });
@@ -25,7 +25,8 @@ new S3Stack(app, 'MemersonS3Stack', {
 new ApiStack(app, 'MemersonApiStack', {
   userPool: cognitoStack.userPool,
   userPoolClient: cognitoStack.userPoolClient,
-  authorizedRole: cognitoStack.authenticatedRole
+  authorizedRole: cognitoStack.authenticatedRole,
+  publicPhotosBucket: s3Stack.publicPhotosBucket
 });
 
 const autoDeployedStages: string[] = [];

@@ -11,9 +11,12 @@ export interface ApiStackProps extends cdk.StackProps {
   readonly userPool: cognito.UserPool;
   readonly userPoolClient: cognito.UserPoolClient;
   readonly authorizedRole: iam.IRole;
+  readonly publicPhotosBucket: s3.IBucket;
 }
 
 export class ApiStack extends cdk.Stack {
+  public photosBucket: s3.IBucket
+
   constructor(scope: cdk.Construct, id: string, props: ApiStackProps) {
     super(scope, id, props);
 
@@ -39,7 +42,7 @@ export class ApiStack extends cdk.Stack {
     });
 
     // List Photos
-    const photosBucket = new s3.Bucket(this, 'MemersonApiPhotos', {
+    this.photosBucket = new s3.Bucket(this, 'MemersonApiPhotos', {
       bucketName: 'memerson-api-photos',
       publicReadAccess: true
     })
@@ -53,7 +56,8 @@ export class ApiStack extends cdk.Stack {
         nodeModules: []
       }
     });
-    photosBucket.grantReadWrite(listPhotosLambda);
+    this.photosBucket.grantReadWrite(listPhotosLambda);
+    props.publicPhotosBucket.grantRead(listPhotosLambda);
 
     const photosApi = api.root.addResource('photos');
     photosApi.addMethod(
