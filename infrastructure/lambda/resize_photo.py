@@ -19,7 +19,7 @@ def resize_photo(source_bucket, source_key, destination_bucket):
     photo = photo_object['Body'].read()
 
     image = Image.open(BytesIO(photo))
-    size = 500, 500
+    size = 1200, 1200
     image.thumbnail(size, Image.ANTIALIAS)
     image.save(buffer, format=image.format)
     buffer.seek(0)
@@ -31,7 +31,8 @@ def resize_photo(source_bucket, source_key, destination_bucket):
     response = s3.put_object(
         Body=buffer,
         Bucket=destination_bucket,
-        Key=f'{key}_{width}x{height}{extension}'
+        # TODO: Remove 20% attribute after updating list-photos
+        Key=f'{key}-20_{width}x{height}{extension}'
     )
 
 
