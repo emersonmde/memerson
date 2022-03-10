@@ -53,7 +53,7 @@ export class S3Stack extends cdk.Stack {
       functionName: resizeLambdaName,
       entry: join(__dirname, '..', 'lambda'),
       index: 'resize_photo.py',
-      handler: 'resize_photo',
+      handler: 'resize_photo_handler',
       runtime: Runtime.PYTHON_3_9,
     });
 
