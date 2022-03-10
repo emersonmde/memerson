@@ -50,6 +50,7 @@ export class S3Stack extends cdk.Stack {
 
     const resizeLambdaName = "MemersonResize";
     const resizeLambda = new lambda.PythonFunction(this, resizeLambdaName, {
+      functionName: resizeLambdaName,
       entry: join(__dirname, '..', 'lambda'),
       index: 'resize_photo.py',
       handler: 'resize_photo',
