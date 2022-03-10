@@ -15,7 +15,7 @@ def resize_photo(source_bucket, source_key, destination_bucket):
 
     buffer = BytesIO()
     s3 = boto3.client('s3')
-    photo_object = s3.get_object(Bucket=source_bucket, key=source_key)
+    photo_object = s3.get_object(Bucket=source_bucket, Key=source_key)
     photo = photo_object['Body'].read()
 
     image = Image.open(BytesIO(photo))
