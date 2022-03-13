@@ -25,12 +25,12 @@ def resize_photo(source_bucket, source_key, destination_bucket):
     image = Image.open(photo_buffer)
     width = image.width
     height = image.height
-    s3.put_object(
-        Body=photo_buffer,
-        Bucket=destination_bucket,
-        Key=f'{key}/{width}x{height}_full{extension}'
-    )
-    photo_buffer.seek(0)
+    copy_source = {
+        'Bucket': source_bucket,
+        'Key': source_key
+    }
+    bucket = boto3.resource('s3').Bucket(destination_bucket)
+    bucket.copy(copy_source, f'{key}/{width}x{height}_full{extension}')
 
     for size in IMAGE_SIZES:
         temp_buffer = BytesIO()
