@@ -8,7 +8,7 @@ import boto3
 from PIL import Image
 
 logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 IMAGE_SIZES = [(1920, 1920), (1280, 1280), (640, 640)]
 s3 = boto3.client('s3')
@@ -17,9 +17,10 @@ s3 = boto3.client('s3')
 def resize_photo(source_bucket, source_key, destination_bucket):
     logger.info(f'Resizing image: {source_bucket}:{source_key}')
 
-    key, extension = os.path.splitext(source_key)
     photo_object = s3.get_object(Bucket=source_bucket, Key=source_key)
     photo_buffer = BytesIO(photo_object['Body'].read())
+    key, extension = os.path.splitext(source_key)
+    key = re.sub(r'^public/', '', key)
 
     image = Image.open(photo_buffer)
     width = image.width
@@ -54,4 +55,4 @@ def resize_photo_handler(event, context):
     for record in event['Records']:
         bucket = record['s3']['bucket']['name']
         key = record['s3']['object']['key']
-        resize_photo(bucket, re.sub(r'^/public', '', key), 'memerson-public-photos')
+        resize_photo(bucket, key, 'memerson-public-photos')

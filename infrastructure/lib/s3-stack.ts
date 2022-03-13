@@ -56,7 +56,8 @@ export class S3Stack extends cdk.Stack {
       index: 'resize_photo.py',
       handler: 'resize_photo_handler',
       runtime: Runtime.PYTHON_3_9,
-      timeout: Duration.minutes(5)
+      timeout: Duration.minutes(2),
+      memorySize: 512
     });
 
     photosBucket.grantReadWrite(resizeLambda);
