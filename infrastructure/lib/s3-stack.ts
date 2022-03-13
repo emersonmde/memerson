@@ -6,6 +6,7 @@ import * as s3 from '@aws-cdk/aws-s3';
 import {IBucket} from '@aws-cdk/aws-s3';
 import {Runtime} from '@aws-cdk/aws-lambda';
 import {join} from 'path';
+import {Duration} from "@aws-cdk/core";
 
 export interface S3StackProps extends cdk.StackProps {
   readonly unauthenticatedRole: iam.Role;
@@ -55,7 +56,10 @@ export class S3Stack extends cdk.Stack {
       index: 'resize_photo.py',
       handler: 'resize_photo_handler',
       runtime: Runtime.PYTHON_3_9,
+      timeout: Duration.minutes(5)
     });
+
+    photosBucket.grantReadWrite(resizeLambda);
 
     resizeLambda.addEventSource(new event.S3EventSource(photosBucket, {
       events: [s3.EventType.OBJECT_CREATED],
