@@ -6,6 +6,10 @@ import * as cognito from '@aws-cdk/aws-cognito';
 import * as apigateway from '@aws-cdk/aws-apigateway';
 import * as cdk from '@aws-cdk/core';
 import {join} from 'path';
+import {Runtime} from "@aws-cdk/aws-lambda";
+import {Duration} from "@aws-cdk/core";
+import * as lambda_python from '@aws-cdk/aws-lambda-python';
+
 
 export interface ApiStackProps extends cdk.StackProps {
   readonly userPool: cognito.UserPool;
@@ -46,15 +50,27 @@ export class ApiStack extends cdk.Stack {
       bucketName: 'memerson-api-photos',
       publicReadAccess: true
     })
-    const listPhotosLambdaName = 'MemersonApiListPhotos'
-    const listPhotosLambda = new lambda_nodejs.NodejsFunction(this, listPhotosLambdaName, {
-      functionName: listPhotosLambdaName,
+    const oldListPhotosLambdaName = 'MemersonApiOldListPhotos'
+    const oldListPhotosLambda = new lambda_nodejs.NodejsFunction(this, oldListPhotosLambdaName, {
+      functionName: oldListPhotosLambdaName,
       runtime: lambda.Runtime.NODEJS_14_X,
       projectRoot: join(__dirname, '..'),
       entry: join(__dirname, '..', 'lambda', 'list-photos.ts'),
       bundling: {
         nodeModules: []
       }
+    });
+    this.photosBucket.grantReadWrite(oldListPhotosLambda);
+    props.publicPhotosBucket.grantRead(oldListPhotosLambda);
+
+    const listPhotosLambdaName = 'MemersonApiListPhotos';
+    const listPhotosLambda = new lambda_python.PythonFunction(this, listPhotosLambdaName, {
+      functionName: listPhotosLambdaName,
+      entry: join(__dirname, '..', 'lambda'),
+      index: 'list_photos.py',
+      handler: 'list_photos_handler',
+      runtime: Runtime.PYTHON_3_9,
+      timeout: Duration.seconds(30),
     });
     this.photosBucket.grantReadWrite(listPhotosLambda);
     props.publicPhotosBucket.grantRead(listPhotosLambda);
