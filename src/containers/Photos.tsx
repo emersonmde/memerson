@@ -6,17 +6,17 @@ import Gallery from "react-photo-gallery";
 
 
 function Photos() {
-  const [photos, setPhotos] = useState([]);
+  const [photosList, setPhotosList] = useState([]);
 
   useEffect(() => {
     const apiName = 'MemersonApi';
     const path = '/photos';
-    const params = {
-      headers: {},
-      response: true, // return the entire Axios response object
-      // queryStringParameters: {
+    const params = { // OPTIONAL
+      headers: {}, // OPTIONAL
+      response: true, // OPTIONAL (return the entire Axios response object instead of only response.data)
+      queryStringParameters: {  // OPTIONAL
         // name: 'param',
-      // },
+      },
     };
 
     API
@@ -24,9 +24,18 @@ function Photos() {
       .then(response => {
         console.debug('ListPhotos API Response: ', JSON.stringify(response, undefined, 2));
         const photos = response.data.sort((photo: any) => photo.src);
+          // .filter((photo: any) => (photo.filename.includes('-20_')))
+          // .filter((photo: any) => (photo.aspect_ratio_width && photo.aspect_ratio_height))
+          // .map((photo: any) => {
+          //   return {
+          //     src: photo.url,
+          //     height: photo.height,
+          //     width: photo.width
+          //   };
+          // });
         console.debug(`Found ${photos.length} photos`);
         console.debug('Photos:', photos);
-        setPhotos(photos);
+        setPhotosList(photos);
       })
       .catch(error => {
         console.error('Error', error);
@@ -35,9 +44,8 @@ function Photos() {
 
   return (
     <Grid container justifyContent="center">
-      <p>photos</p>
-      {photos && photos.length > 0
-        ? <Gallery photos={photos}/>
+      {photosList && photosList.length > 0
+        ? <Gallery photos={photosList}/>
         : <Loader
           type="Audio"
           color="#202124"
