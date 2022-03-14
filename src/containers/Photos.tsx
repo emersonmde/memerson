@@ -35,6 +35,7 @@ function Photos() {
 
   return (
     <Grid container justifyContent="center">
+      <p>photos</p>
       {photos && photos.length > 0
         ? <Gallery photos={photos}/>
         : <Loader
