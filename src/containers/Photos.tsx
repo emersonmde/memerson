@@ -11,12 +11,12 @@ function Photos() {
   useEffect(() => {
     const apiName = 'MemersonApi';
     const path = '/photos';
-    const params = { // OPTIONAL
-      headers: {}, // OPTIONAL
-      response: true, // OPTIONAL (return the entire Axios response object instead of only response.data)
-      queryStringParameters: {  // OPTIONAL
+    const params = {
+      headers: {},
+      response: true, // return the entire Axios response object
+      // queryStringParameters: {
         // name: 'param',
-      },
+      // },
     };
 
     API
