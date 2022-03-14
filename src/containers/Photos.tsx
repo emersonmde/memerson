@@ -24,18 +24,10 @@ function Photos() {
       .then(response => {
         console.debug('ListPhotos API Response: ', JSON.stringify(response, undefined, 2));
         const photos = response.data.sort((photo: any) => photo.src);
-          // .filter((photo: any) => (photo.filename.includes('-20_')))
-          // .filter((photo: any) => (photo.aspect_ratio_width && photo.aspect_ratio_height))
-          // .map((photo: any) => {
-          //   return {
-          //     src: photo.url,
-          //     height: photo.height,
-          //     width: photo.width
-          //   };
-          // });
         console.debug(`Found ${photos.length} photos`);
         console.debug('Photos:', photos);
         setPhotosList(photos);
+        console.debug('PhotoList:', photosList);
       })
       .catch(error => {
         console.error('Error', error);
@@ -44,6 +36,7 @@ function Photos() {
 
   return (
     <Grid container justifyContent="center">
+      <p>photos</p>
       {photosList && photosList.length > 0
         ? <Gallery photos={photosList}/>
         : <Loader
