@@ -62,12 +62,13 @@ def list_photos():
     photos = []
     for k, v in photo_keys.items():
         v.sort(key=lambda i: get_dimensions(i)[0])
+        width, height = get_dimensions(v[0])
         photos.append({
             'src': s3_url(BUCKET, k, v[0]),
             'srcSet': [s3_url(BUCKET, k, f'{photo} {i + 1}x') for i, photo in enumerate(v)],
             # TODO: Add sizes and aspect ratio
             # 'sizes': [],
-            # 'width': 4,
-            # 'height': 3,
+            'width': width,
+            'height': height,
         })
     return photos

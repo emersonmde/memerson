@@ -23,21 +23,21 @@ function Photos() {
       .get(apiName, path, params)
       .then(response => {
         console.debug('ListPhotos API Response: ', JSON.stringify(response, undefined, 2));
-        const photos = response.data
-          .filter((photo: any) => (photo.filename.includes('-20_')))
+        const photos = response.data;
+          // .filter((photo: any) => (photo.filename.includes('-20_')))
           // .filter((photo: any) => (photo.aspect_ratio_width && photo.aspect_ratio_height))
-          .map((photo: any) => {
-            return {
-              src: photo.url,
-              height: photo.height,
-              width: photo.width
-            };
-          });
+          // .map((photo: any) => {
+          //   return {
+          //     src: photo.url,
+          //     height: photo.height,
+          //     width: photo.width
+          //   };
+          // });
         console.debug(`Found ${photos.length} photos`);
         setPhotosList(photos);
       })
       .catch(error => {
-        console.log(error.response);
+        console.error('Error', error);
       });
   }, []);
 
