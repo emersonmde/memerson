@@ -6,7 +6,7 @@ import Gallery from "react-photo-gallery";
 
 
 function Photos() {
-  const [photosList, setPhotosList] = useState([]);
+  const [photos, setPhotos] = useState([]);
 
   useEffect(() => {
     const apiName = 'MemersonApi';
@@ -23,18 +23,10 @@ function Photos() {
       .get(apiName, path, params)
       .then(response => {
         console.debug('ListPhotos API Response: ', JSON.stringify(response, undefined, 2));
-        const photos = response.data;
-          // .filter((photo: any) => (photo.filename.includes('-20_')))
-          // .filter((photo: any) => (photo.aspect_ratio_width && photo.aspect_ratio_height))
-          // .map((photo: any) => {
-          //   return {
-          //     src: photo.url,
-          //     height: photo.height,
-          //     width: photo.width
-          //   };
-          // });
+        const photos = response.data.sort((photo: any) => photo.src);
         console.debug(`Found ${photos.length} photos`);
-        setPhotosList(photos);
+        console.debug('Photos:', photos);
+        setPhotos(photos);
       })
       .catch(error => {
         console.error('Error', error);
@@ -43,8 +35,8 @@ function Photos() {
 
   return (
     <Grid container justifyContent="center">
-      {photosList && photosList.length > 0
-        ? <Gallery photos={photosList}/>
+      {photos && photos.length > 0
+        ? <Gallery photos={photos}/>
         : <Loader
           type="Audio"
           color="#202124"

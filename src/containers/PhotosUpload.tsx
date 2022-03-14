@@ -24,7 +24,7 @@ function PhotosUpload() {
         return oldFiles.concat({name: file.name, progress: 0});
       });
       console.log(`Starting upload of file ${file.name} of type: ${file.type}`);
-      Storage.put(`${uuidv4()}.${file.name.split('.').pop()}`, file, {
+      Storage.put(`${file.lastModified}-${uuidv4()}.${file.name.split('.').pop()}`, file, {
         contentType: file.type,
         progressCallback(progress) {
           setFiles((oldFiles) => {

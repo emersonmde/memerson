@@ -66,7 +66,6 @@ def list_photos():
         photos.append({
             'src': s3_url(BUCKET, k, v[0]),
             'srcSet': [s3_url(BUCKET, k, f'{photo} {i + 1}x') for i, photo in enumerate(v)],
-            # TODO: Add sizes and aspect ratio
             # 'sizes': [],
             'width': width,
             'height': height,
