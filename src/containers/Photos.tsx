@@ -11,11 +11,10 @@ function Photos() {
   useEffect(() => {
     const apiName = 'MemersonApi';
     const path = '/photos';
-    const params = { // OPTIONAL
-      headers: {}, // OPTIONAL
-      response: true, // OPTIONAL (return the entire Axios response object instead of only response.data)
-      queryStringParameters: {  // OPTIONAL
-        // name: 'param',
+    const params = {
+      headers: {},
+      response: true, // return the entire Axios response object
+      queryStringParameters: {
       },
     };
 
@@ -23,7 +22,7 @@ function Photos() {
       .get(apiName, path, params)
       .then(response => {
         console.debug('ListPhotos API Response: ', JSON.stringify(response, undefined, 2));
-        const photos = response.data.sort((photo: any) => photo.src);
+        const photos = response.data.sort((a: any, b: any) => a.src > b.src ? -1 : 1);
         console.debug(`Found ${photos.length} photos`);
         console.debug('Photos:', photos);
         setPhotosList(photos);
@@ -36,7 +35,6 @@ function Photos() {
 
   return (
     <Grid container justifyContent="center">
-      <p>photos</p>
       {photosList && photosList.length > 0
         ? <Gallery photos={photosList}/>
         : <Loader
