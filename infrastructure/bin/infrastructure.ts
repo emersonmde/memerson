@@ -6,6 +6,7 @@ import {CognitoStack} from '../lib/cognito-stack';
 import {ApiStack} from '../lib/api-stack';
 import {PipelineStack} from '../lib/pipeline-stack';
 import {S3Stack} from '../lib/s3-stack';
+import {MinecraftStack} from "../lib/minecraft";
 
 const app = new cdk.App();
 const route53Stack = new Route53Stack(app, 'MemersonRoute53Stack', {});
@@ -29,8 +30,11 @@ new ApiStack(app, 'MemersonApiStack', {
   publicPhotosBucket: s3Stack.publicPhotosBucket
 });
 
-const autoDeployedStages: string[] = [];
+new MinecraftStack(app, 'MemersonMinecraftStack', {
+  hostedZone: route53Stack.hostedZone
+});
 
+const autoDeployedStages: string[] = [];
 new PipelineStack(app, 'MemersonReactPipelineStack', {
   autoDeployedStacks: autoDeployedStages,
   websiteAssetsBucket: cloudfrontStack.assetsBucket,
