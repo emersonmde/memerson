@@ -80,15 +80,15 @@ export class Route53Stack extends cdk.Stack {
 
         // memerson.dev
         const memersonDevHostedZone = new route53.PublicHostedZone(this, 'MemersonDevHostedZone', {
-            zoneName: this.domain,
+            zoneName: 'memerson.dev',
         });
 
         const memersonDevCertificate = new certificatemanager.Certificate(this, 'MemersonDevCert', {
             domainName: this.domain,
-            validation: certificatemanager.CertificateValidation.fromDns(this.hostedZone),
+            validation: certificatemanager.CertificateValidation.fromDns(memersonDevHostedZone),
         });
 
-        const memersonDevNameservers = this.hostedZone.hostedZoneNameServers as string[];
+        const memersonDevNameservers = memersonDevHostedZone.hostedZoneNameServers as string[];
         new cdk.CfnOutput(this, 'MemersonDevNameServers', {value: cdk.Fn.join(',', memersonDevNameservers)});
     }
 }
