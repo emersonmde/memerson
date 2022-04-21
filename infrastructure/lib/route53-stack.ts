@@ -5,30 +5,31 @@ import {Duration} from "@aws-cdk/core";
 
 
 export class Route53Stack extends cdk.Stack {
-    domain: string = 'memerson.net'
+    memersonNetDomain: string = 'memerson.net';
+    memersonDevDomain: string = 'memerson.dev';
     hostedZone: route53.PublicHostedZone;
     certificate: certificatemanager.Certificate;
 
     constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props);
 
-        this.hostedZone = new route53.PublicHostedZone(this, 'MemersonHostedZone', {
-            zoneName: this.domain,
+        const memersonNetHostedZone = new route53.PublicHostedZone(this, 'MemersonHostedZone', {
+            zoneName: this.memersonNetDomain,
         });
 
-        this.certificate = new certificatemanager.Certificate(this, 'MemersonCert', {
-            domainName: this.domain,
-            validation: certificatemanager.CertificateValidation.fromDns(this.hostedZone),
-            // subjectAlternativeNames: [`*.${this.domain}`],
+        const memersonNetCertificate = new certificatemanager.Certificate(this, 'MemersonCert', {
+            domainName: this.memersonNetDomain,
+            validation: certificatemanager.CertificateValidation.fromDns(memersonNetHostedZone),
+            // subjectAlternativeNames: [`*.${this.memersonNetDomain}`],
         });
         // this.certificate = new certificatemanager.DnsValidatedCertificate(this, 'MemersonCert', {
         //     region: 'us-east-1',
         //     hostedZone: this.hostedZone,
-        //     domainName: this.domain,
-        //     // subjectAlternativeNames: [`*.${this.domain}`],
+        //     domainName: this.memersonNetDomain,
+        //     // subjectAlternativeNames: [`*.${this.memersonNetDomain}`],
         //     validationDomains: {
-        //         [this.domain]: this.domain,
-        //         // [`*.${this.domain}`]: this.domain
+        //         [this.memersonNetDomain]: this.memersonNetDomain,
+        //         // [`*.${this.memersonNetDomain}`]: this.memersonNetDomain
         //     },
         //     validationMethod: certificatemanager.ValidationMethod.DNS,
         // });
@@ -38,7 +39,7 @@ export class Route53Stack extends cdk.Stack {
         // });
 
         new route53.TxtRecord(this, 'MemersonTxtRecord', {
-            zone: this.hostedZone,
+            zone: memersonNetHostedZone,
             recordName: '',
             values: [
                 'hey-verification:CTeRPLx7npx9uiEP7x9b8xL9',
@@ -48,7 +49,7 @@ export class Route53Stack extends cdk.Stack {
         });
 
         new route53.TxtRecord(this, 'MemersonNetDmarcRecord', {
-            zone: this.hostedZone,
+            zone: memersonNetHostedZone,
             recordName: '_dmarc',
             values: [
                 'v=DMARC1; p=none;',
@@ -57,7 +58,7 @@ export class Route53Stack extends cdk.Stack {
         });
 
         new route53.MxRecord(this, 'MemersonNetMxRecord', {
-            zone: this.hostedZone,
+            zone: memersonNetHostedZone,
             values: [
                 {
                     hostName: 'work-mx.app.hey.com',
@@ -68,27 +69,31 @@ export class Route53Stack extends cdk.Stack {
         });
 
         new route53.CnameRecord(this, 'MemersonNetHeyDomainKey', {
-            zone: this.hostedZone,
+            zone: memersonNetHostedZone,
             recordName: 'heymail._domainkey',
             domainName: 'heymail._domainkey.hey.com.',
             ttl: Duration.hours(1)
         });
 
-        const memersonNetNameservers = this.hostedZone.hostedZoneNameServers as string[];
+        const memersonNetNameservers = memersonNetHostedZone.hostedZoneNameServers as string[];
         new cdk.CfnOutput(this, 'MemersonNetNameServers', {value: cdk.Fn.join(',', memersonNetNameservers)});
 
 
         // memerson.dev
         const memersonDevHostedZone = new route53.PublicHostedZone(this, 'MemersonDevHostedZone', {
-            zoneName: 'memerson.dev',
+            zoneName: this.memersonDevDomain,
         });
 
         const memersonDevCertificate = new certificatemanager.Certificate(this, 'MemersonDevCert', {
-            domainName: this.domain,
+            domainName: this.memersonDevDomain,
             validation: certificatemanager.CertificateValidation.fromDns(memersonDevHostedZone),
         });
 
         const memersonDevNameservers = memersonDevHostedZone.hostedZoneNameServers as string[];
         new cdk.CfnOutput(this, 'MemersonDevNameServers', {value: cdk.Fn.join(',', memersonDevNameservers)});
+
+
+        this.hostedZone = memersonNetHostedZone;
+        this.certificate = memersonNetCertificate;
     }
 }
