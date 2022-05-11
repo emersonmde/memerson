@@ -65,12 +65,5 @@ export class CloudFrontStack extends cdk.Stack {
         zone: props.hostedZone,
         target: route53.RecordTarget.fromAlias(new targets.CloudFrontTarget(distribution)),
     });
-
-    new patterns.HttpsRedirect(this, 'WwwHttpsRedirect', {
-        recordNames: [`www.${props.hostedZone.zoneName}`],
-        targetDomain: props.hostedZone.zoneName,
-        zone: props.hostedZone
-    })
-
   }
 }

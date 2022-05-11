@@ -8,6 +8,7 @@ export class Route53Stack extends cdk.Stack {
     memersonNetDomain: string = 'memerson.net';
     memersonDevDomain: string = 'memerson.dev';
     hostedZone: route53.PublicHostedZone;
+    memersonDevHostedZone: route53.PublicHostedZone;
     certificate: certificatemanager.Certificate;
 
     constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -22,59 +23,6 @@ export class Route53Stack extends cdk.Stack {
             validation: certificatemanager.CertificateValidation.fromDns(memersonNetHostedZone),
             // subjectAlternativeNames: [`*.${this.memersonNetDomain}`],
         });
-        // this.certificate = new certificatemanager.DnsValidatedCertificate(this, 'MemersonCert', {
-        //     region: 'us-east-1',
-        //     hostedZone: this.hostedZone,
-        //     domainName: this.memersonNetDomain,
-        //     // subjectAlternativeNames: [`*.${this.memersonNetDomain}`],
-        //     validationDomains: {
-        //         [this.memersonNetDomain]: this.memersonNetDomain,
-        //         // [`*.${this.memersonNetDomain}`]: this.memersonNetDomain
-        //     },
-        //     validationMethod: certificatemanager.ValidationMethod.DNS,
-        // });
-
-        // new route53.PublicHostedZone(this, 'TestMemersonHostedZone', {
-        //     zoneName: 'test.memerson.net',
-        // });
-
-        new route53.TxtRecord(this, 'MemersonTxtRecord', {
-            zone: memersonNetHostedZone,
-            recordName: '',
-            values: [
-                'hey-verification:CTeRPLx7npx9uiEP7x9b8xL9',
-                'v=spf1 include:_spf.hey.com ~all'
-            ],
-            ttl: Duration.hours(1)
-        });
-
-        new route53.TxtRecord(this, 'MemersonNetDmarcRecord', {
-            zone: memersonNetHostedZone,
-            recordName: '_dmarc',
-            values: [
-                'v=DMARC1; p=none;',
-            ],
-            ttl: Duration.hours(1)
-        });
-
-        new route53.MxRecord(this, 'MemersonNetMxRecord', {
-            zone: memersonNetHostedZone,
-            values: [
-                {
-                    hostName: 'work-mx.app.hey.com',
-                    priority: 10
-                },
-            ],
-            ttl: Duration.hours(1)
-        });
-
-        new route53.CnameRecord(this, 'MemersonNetHeyDomainKey', {
-            zone: memersonNetHostedZone,
-            recordName: 'heymail._domainkey',
-            domainName: 'heymail._domainkey.hey.com.',
-            ttl: Duration.hours(1)
-        });
-
         const memersonNetNameservers = memersonNetHostedZone.hostedZoneNameServers as string[];
         new cdk.CfnOutput(this, 'MemersonNetNameServers', {value: cdk.Fn.join(',', memersonNetNameservers)});
 
@@ -92,8 +40,7 @@ export class Route53Stack extends cdk.Stack {
         const memersonDevNameservers = memersonDevHostedZone.hostedZoneNameServers as string[];
         new cdk.CfnOutput(this, 'MemersonDevNameServers', {value: cdk.Fn.join(',', memersonDevNameservers)});
 
-
-        this.hostedZone = memersonNetHostedZone;
-        this.certificate = memersonNetCertificate;
+        this.hostedZone = memersonDevHostedZone;
+        this.certificate = memersonDevCertificate;
     }
 }
