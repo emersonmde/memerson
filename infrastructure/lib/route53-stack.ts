@@ -40,6 +40,44 @@ export class Route53Stack extends cdk.Stack {
         const memersonDevNameservers = memersonDevHostedZone.hostedZoneNameServers as string[];
         new cdk.CfnOutput(this, 'MemersonDevNameServers', {value: cdk.Fn.join(',', memersonDevNameservers)});
 
+
+        new route53.TxtRecord(this, 'MemersonDevTxtRecord', {
+            zone: memersonDevHostedZone,
+            recordName: '',
+            values: [
+                'hey-verification:SzL4Ngn97gGu5rHM8pvFiJ68',
+                'v=spf1 include:_spf.hey.com ~all'
+            ],
+            ttl: Duration.hours(1)
+        });
+
+        new route53.TxtRecord(this, 'MemersonDevDmarcRecord', {
+            zone: memersonDevHostedZone,
+            recordName: '_dmarc',
+            values: [
+                'v=DMARC1; p=none;',
+            ],
+            ttl: Duration.hours(1)
+        });
+
+        new route53.CnameRecord(this, 'MemersonDevHeyDomainKey', {
+            zone: memersonDevHostedZone,
+            recordName: 'heymail._domainkey',
+            domainName: 'heymail._domainkey.hey.com.',
+            ttl: Duration.hours(1)
+        });
+
+        new route53.MxRecord(this, 'MemersonDevMxRecord', {
+            zone: memersonDevHostedZone,
+            values: [
+                {
+                    hostName: 'work-mx.app.hey.com',
+                    priority: 10
+                },
+            ],
+            ttl: Duration.hours(1)
+        });
+
         this.hostedZone = memersonDevHostedZone;
         this.certificate = memersonDevCertificate;
     }
