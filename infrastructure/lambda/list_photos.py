@@ -17,7 +17,7 @@ def list_photos_handler(event, context):
     headers = {
         "Access-Control-Allow-Headers": 'Content-Type',
         "Access-Control-Allow-Origin": event['headers'].get(
-            'origin') or 'https://memerson.net, http://localhost:3000',
+            'origin') or 'https://memerson.dev, http://localhost:3000',
         "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
     }
 

@@ -11,7 +11,7 @@ export async function handler(event: APIGatewayProxyEventV2): Promise<APIGateway
             statusCode: 200,
             headers: {
                 "Access-Control-Allow-Headers": 'Content-Type',
-                "Access-Control-Allow-Origin": event.headers.origin || 'https://memerson.net',
+                "Access-Control-Allow-Origin": event.headers.origin || 'https://memerson.dev',
                 "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
             },
             body: JSON.stringify({auth_echo: 'scucess'})

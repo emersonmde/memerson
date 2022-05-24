@@ -27,7 +27,7 @@ export class ApiStack extends cdk.Stack {
 
     const api = new apigateway.RestApi(this, 'MemersonApi', {
       restApiName: 'MemersonApi',
-      description: 'REST API for memerson.net',
+      description: 'REST API for memerson.dev',
       deployOptions: {
         stageName: 'dev',
       },
@@ -41,7 +41,7 @@ export class ApiStack extends cdk.Stack {
         ],
         allowMethods: ['OPTIONS', 'GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
         allowCredentials: true,
-        allowOrigins: ['http://localhost:3000', 'https://memerson.net'],
+        allowOrigins: ['http://localhost:3000', 'https://memerson.dev'],
       },
     });
 
