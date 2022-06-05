@@ -5,7 +5,7 @@ import Loader from 'react-loader-spinner';
 import Gallery, {PhotoProps} from "react-photo-gallery";
 import "./Photos.css";
 
-interface asdf {
+interface ClickHandler {
   index: number
   next: PhotoProps | null
   photo: PhotoProps
@@ -14,7 +14,7 @@ interface asdf {
 
 function Photos() {
   const [photosList, setPhotosList] = useState([]);
-  const [lightboxPhoto, setLightboxPhoto] = useState<asdf>();
+  const [lightboxPhoto, setLightboxPhoto] = useState<ClickHandler>();
 
   useEffect(() => {
     const apiName = 'MemersonApi';
