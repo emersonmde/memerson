@@ -1,9 +1,13 @@
+import json
 import logging
+from collections import defaultdict
 
 import boto3
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
+ec2 = boto3.client('ec2')
+
 
 
 def server_status_handler(event, context):
@@ -18,7 +22,18 @@ def server_status_handler(event, context):
     response = {
         'statusCode': 200,
         'headers': headers,
-        'body': {'auth_ech': 'scucess'}
+        'body': {
+            # TODO: "Object of type datetime is not JSON serializable"
+            'servers': json.dumps(server_status())
+        }
     }
     logger.info(f'Response: {response}')
+    return response
+
+
+def server_status():
+    response = ec2.describe_instances()
+    logger.info("=================")
+    logger.info(f"Response: {response}")
+    logger.info("=================")
     return response

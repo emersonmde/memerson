@@ -112,6 +112,14 @@ export class ApiStack extends cdk.Stack {
       runtime: Runtime.PYTHON_3_9,
       timeout: Duration.seconds(30),
     });
+    serverStatusLambda.addToRolePolicy(new iam.PolicyStatement(
+      {
+        resources: ['*'],
+        actions: [
+          'ec2:DescribeInstances',
+        ],
+      }
+    ));
 
     const serverStatusApi = api.root.addResource('server_status');
     const serverStatusMethod = serverStatusApi.addMethod(
@@ -131,6 +139,16 @@ export class ApiStack extends cdk.Stack {
       runtime: Runtime.PYTHON_3_9,
       timeout: Duration.seconds(30),
     });
+    serverControlLambda.addToRolePolicy(new iam.PolicyStatement(
+      {
+        resources: ['*'],
+        actions: [
+          'ec2:DescribeInstances',
+          'ec2:StopInstances',
+          'ec2:StartInstances',
+        ],
+      }
+    ));
 
     const serverControlApi = api.root.addResource('server_control');
     const serverControlMethod = serverControlApi.addMethod(
