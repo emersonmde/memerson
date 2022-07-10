@@ -24,7 +24,7 @@ def server_status_handler(event, context):
         'headers': headers,
         'body': {
             # TODO: "Object of type datetime is not JSON serializable"
-            'servers': json.dumps(server_status())
+            'servers': json.dumps(server_status(), default=str)
         }
     }
     logger.info(f'Response: {response}')
@@ -33,7 +33,5 @@ def server_status_handler(event, context):
 
 def server_status():
     response = ec2.describe_instances()
-    logger.info("=================")
-    logger.info(f"Response: {response}")
-    logger.info("=================")
+    logger.info(f"Instances: {response}")
     return response
