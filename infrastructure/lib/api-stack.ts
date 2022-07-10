@@ -103,12 +103,50 @@ export class ApiStack extends cdk.Stack {
       }
     );
 
+    const serverStatusLambdaName = 'MemersonApiServerStatus'
+    const serverStatusLambda = new lambda_python.PythonFunction(this, serverStatusLambdaName, {
+      functionName: serverStatusLambdaName,
+      entry: join(__dirname, '..', 'lambda'),
+      index: 'server_status.py',
+      handler: 'server_status_handler',
+      runtime: Runtime.PYTHON_3_9,
+      timeout: Duration.seconds(30),
+    });
+
+    const serverStatusApi = api.root.addResource('server_status');
+    const serverStatusMethod = serverStatusApi.addMethod(
+      'GET',
+      new apigateway.LambdaIntegration(serverStatusLambda, {proxy: true}),
+      {
+        authorizationType: apigateway.AuthorizationType.IAM
+      }
+    );
+
+    const serverControlLambdaName = 'MemersonApiServerControl'
+    const serverControlLambda = new lambda_python.PythonFunction(this, serverControlLambdaName, {
+      functionName: serverControlLambdaName,
+      entry: join(__dirname, '..', 'lambda'),
+      index: 'server_control.py',
+      handler: 'server_control_handler',
+      runtime: Runtime.PYTHON_3_9,
+      timeout: Duration.seconds(30),
+    });
+
+    const serverControlApi = api.root.addResource('server_control');
+    const serverControlMethod = serverControlApi.addMethod(
+      'GET',
+      new apigateway.LambdaIntegration(serverControlLambda, {proxy: true}),
+      {
+        authorizationType: apigateway.AuthorizationType.IAM
+      }
+    );
+
     props.authorizedRole.attachInlinePolicy(new iam.Policy(this, 'AllowAuthEcho', {
       statements: [
         new iam.PolicyStatement({
           actions: ['execute-api:Invoke'],
           effect: iam.Effect.ALLOW,
-          resources: [authEchoMethod.methodArn]
+          resources: [authEchoMethod.methodArn, serverStatusMethod.methodArn, serverControlMethod.methodArn]
         })
       ]
     }));
