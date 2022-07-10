@@ -5,6 +5,7 @@ import {Route, Switch} from "react-router-dom";
 import CreatePost from "./containers/CreatePost";
 import SignIn from "./containers/SignIn";
 import PhotosUpload from "./containers/PhotosUpload";
+import ServerDashboard from "./containers/ServerDashboard";
 
 
 export default function Routes() {
@@ -21,6 +22,9 @@ export default function Routes() {
       </Route>
       <Route path="/photos">
         <Photos/>
+      </Route>
+      <Route path="/server_dashboard">
+        <ServerDashboard/>
       </Route>
       <Route path="/create_post">
         <CreatePost/>

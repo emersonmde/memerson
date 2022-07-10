@@ -38,6 +38,9 @@ export default function Header() {
           </Button>
           {user &&
               <>
+                  <Button variant="text" color="inherit" component={Link} to="/server_dashboard">
+                      Server Dashboard
+                  </Button>
                   <Button variant="text" color="inherit" component={Link} to="/create_post">
                       Create Post
                   </Button>
