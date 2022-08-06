@@ -7,7 +7,7 @@ import {ApiStack} from '../lib/api-stack';
 import {PipelineStack} from '../lib/pipeline-stack';
 import {S3Stack} from '../lib/s3-stack';
 import {MinecraftStack} from "../lib/minecraft";
-import {GlacierStack} from "../lib/glacier";
+import {BackupStack} from "../lib/backup-stack";
 
 const app = new cdk.App();
 const route53Stack = new Route53Stack(app, 'MemersonRoute53Stack', {});
@@ -35,7 +35,7 @@ new MinecraftStack(app, 'MemersonMinecraftStack', {
   hostedZone: route53Stack.hostedZone
 });
 
-new GlacierStack(app, 'MemersonGlacierStack', {});
+new BackupStack(app, 'MemersonBackupStack', {});
 
 const autoDeployedStages: string[] = [];
 new PipelineStack(app, 'MemersonReactPipelineStack', {
