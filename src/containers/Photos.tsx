@@ -18,7 +18,7 @@ function Photos() {
 
   useEffect(() => {
     const apiName = 'MemersonApi';
-    const path = '/photos';
+    const path = 'photos';
     const params = {
       headers: {},
       response: true, // return the entire Axios response object
