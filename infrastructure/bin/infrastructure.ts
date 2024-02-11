@@ -28,6 +28,7 @@ new ApiStack(app, 'MemersonApiStack', {
   userPool: cognitoStack.userPool,
   userPoolClient: cognitoStack.userPoolClient,
   authorizedRole: cognitoStack.authenticatedRole,
+  unauthenticatedRole: cognitoStack.unauthenticatedRole,
   publicPhotosBucket: s3Stack.publicPhotosBucket
 });
 

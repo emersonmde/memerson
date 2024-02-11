@@ -15,6 +15,7 @@ export interface ApiStackProps extends cdk.StackProps {
   readonly userPool: cognito.UserPool;
   readonly userPoolClient: cognito.UserPoolClient;
   readonly authorizedRole: iam.IRole;
+  readonly unauthenticatedRole: iam.IRole;
   readonly publicPhotosBucket: s3.IBucket;
 }
 
@@ -41,7 +42,7 @@ export class ApiStack extends cdk.Stack {
         ],
         allowMethods: ['OPTIONS', 'GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
         allowCredentials: true,
-        allowOrigins: ['http://localhost:3000', 'https://memerson.dev'],
+        allowOrigins: ['http://localhost:3000', 'https://memerson.dev', 'https://errorsignal.dev'],
       },
     });
 
@@ -76,7 +77,7 @@ export class ApiStack extends cdk.Stack {
     props.publicPhotosBucket.grantRead(listPhotosLambda);
 
     const photosApi = api.root.addResource('photos');
-    photosApi.addMethod(
+    const listPhotosMethod = photosApi.addMethod(
       'GET',
       new apigateway.LambdaIntegration(listPhotosLambda, {proxy: true}),
       {authorizationType: apigateway.AuthorizationType.NONE}
@@ -169,9 +170,22 @@ export class ApiStack extends cdk.Stack {
       ]
     }));
 
+    props.unauthenticatedRole.attachInlinePolicy(new iam.Policy(this, 'AllowListPhotos', {
+      statements: [
+        new iam.PolicyStatement({
+          actions: ['execute-api:Invoke'],
+          effect: iam.Effect.ALLOW,
+          resources: [listPhotosMethod.methodArn]
+        })
+      ]
+    }));
+
     const apiResource = api.root.addResource('api');
-    const eventsResource = apiResource.addResource('events');
-    const plausibleIntegration = new apigateway.HttpIntegration('https://plausible.io/api/event');
+    const eventsResource = apiResource.addResource('event');
+    const plausibleIntegration = new apigateway.HttpIntegration('https://plausible.io/api/event', {
+      httpMethod: 'POST',
+      proxy: true
+    });
     eventsResource.addMethod('POST', plausibleIntegration);
 
     new cdk.CfnOutput(this, 'memersonApiUrl', {
