@@ -169,6 +169,10 @@ export class ApiStack extends cdk.Stack {
       ]
     }));
 
+    const apiResource = api.root.addResource('api');
+    const eventsResource = apiResource.addResource('events');
+    const plausibleIntegration = new apigateway.HttpIntegration('https://plausible.io/api/event');
+    eventsResource.addMethod('POST', plausibleIntegration);
 
     new cdk.CfnOutput(this, 'memersonApiUrl', {
       value: api.url || '',
