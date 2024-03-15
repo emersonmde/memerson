@@ -182,11 +182,11 @@ export class ApiStack extends cdk.Stack {
 
     const apiResource = api.root.addResource('api');
     const eventsResource = apiResource.addResource('event');
-    const plausibleIntegration = new apigateway.HttpIntegration('https://plausible.io/api/event', {
+    const posthogIntegration = new apigateway.HttpIntegration('https://us.i.posthog.com', {
       httpMethod: 'POST',
       proxy: true
     });
-    eventsResource.addMethod('POST', plausibleIntegration);
+    eventsResource.addMethod('POST', posthogIntegration);
 
     new cdk.CfnOutput(this, 'memersonApiUrl', {
       value: api.url || '',
