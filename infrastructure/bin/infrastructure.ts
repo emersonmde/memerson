@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 import * as cdk from '@aws-cdk/core';
-import {Route53Stack} from '../lib/route53-stack';
-import {CloudFrontStack} from '../lib/cloudfront-stack';
-import {CognitoStack} from '../lib/cognito-stack';
-import {ApiStack} from '../lib/api-stack';
-import {PipelineStack} from '../lib/pipeline-stack';
-import {S3Stack} from '../lib/s3-stack';
-import {MinecraftStack} from "../lib/minecraft";
-import {BackupStack} from "../lib/backup-stack";
+import { Route53Stack } from '../lib/route53-stack';
+import { CloudFrontStack } from '../lib/cloudfront-stack';
+import { CognitoStack } from '../lib/cognito-stack';
+import { ApiStack } from '../lib/api-stack';
+import { PipelineStack } from '../lib/pipeline-stack';
+import { S3Stack } from '../lib/s3-stack';
+import { MinecraftStack } from "../lib/minecraft";
+import { BackupStack } from "../lib/backup-stack";
+import { PostHogReverseProxyStack } from '../lib/posthog-stack';
 
 const app = new cdk.App();
 const route53Stack = new Route53Stack(app, 'MemersonRoute53Stack', {});
@@ -37,6 +38,8 @@ new MinecraftStack(app, 'MemersonMinecraftStack', {
 });
 
 new BackupStack(app, 'MemersonBackupStack', {});
+
+new PostHogReverseProxyStack(app, 'MemersonPostHogReverseProxyStack', {});
 
 const autoDeployedStages: string[] = [];
 new PipelineStack(app, 'MemersonReactPipelineStack', {
