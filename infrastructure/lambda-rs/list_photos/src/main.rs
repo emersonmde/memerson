@@ -12,6 +12,7 @@ struct Photo {
     height: u32,
 }
 
+/// Extract the photo dimensions from the URL
 fn get_dimensions(url: &str) -> (u32, u32) {
     let re = Regex::new(r"(\d+)x(\d+)").unwrap();
     if let Some(caps) = re.captures(url) {
@@ -23,6 +24,7 @@ fn get_dimensions(url: &str) -> (u32, u32) {
     }
 }
 
+/// List all photos in the S3 bucket
 async fn list_s3_photos() -> Result<Vec<Photo>> {
     let config = aws_config::load_defaults(BehaviorVersion::v2023_11_09()).await;
     let client = aws_sdk_s3::Client::new(&config);
@@ -58,6 +60,7 @@ async fn function_handler(event: Request) -> Result<Response<Body>, Error> {
 
     let _ = list_s3_photos().await;
 
+    // TODO: Remove example
     // Extract some useful information from the request
     let who = event
         .query_string_parameters_ref()

@@ -76,6 +76,18 @@ export class ApiStack extends cdk.Stack {
     this.photosBucket.grantReadWrite(listPhotosLambda);
     props.publicPhotosBucket.grantRead(listPhotosLambda);
 
+    const rustListPhotosLambdaName = 'MemersonApiRustListPhotos'
+    const rustListPhotosLambda = new lambda.Function(this, rustListPhotosLambdaName, {
+      functionName: rustListPhotosLambdaName,
+      code: lambda.Code.fromAsset(join(__dirname, '..', 'lambda-rs', 'target', 'lambda', 'list_photos', 'bootstrap.zip')),
+      handler: 'unused',
+      runtime: lambda.Runtime.PROVIDED_AL2,
+      environment: {
+        // Environment variables
+      },
+      timeout: Duration.seconds(30),
+    });
+
     const photosApi = api.root.addResource('photos');
     const listPhotosMethod = photosApi.addMethod(
       'GET',
