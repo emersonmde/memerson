@@ -21,3 +21,15 @@ Then invoke the Lambda function using:
 ```bash
 aws lambda invoke function_name --data-file ./path/to/input.json
 ```
+
+## Deploying
+
+Build the release target using
+```
+cargo lambda build --release --target x86_64-unknown-linux-gnu
+```
+
+Then in the `infrastructure` directory run
+```
+cdk deploy MemersonApiStack
+```
