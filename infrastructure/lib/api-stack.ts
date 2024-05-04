@@ -17,6 +17,7 @@ export interface ApiStackProps extends cdk.StackProps {
   readonly authorizedRole: iam.IRole;
   readonly unauthenticatedRole: iam.IRole;
   readonly publicPhotosBucket: s3.IBucket;
+  readonly assetsBucket: s3.IBucket;
 }
 
 export class ApiStack extends cdk.Stack {
@@ -83,10 +84,11 @@ export class ApiStack extends cdk.Stack {
       handler: 'unused',
       runtime: lambda.Runtime.PROVIDED_AL2,
       environment: {
-        // Environment variables
+        ASSETS_BUCKET: props.assetsBucket.bucketName,
       },
       timeout: Duration.seconds(30),
     });
+    props.assetsBucket.grantRead(rustListPhotosLambda);
 
     const photosApi = api.root.addResource('photos');
     const listPhotosMethod = photosApi.addMethod(

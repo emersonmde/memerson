@@ -22,7 +22,8 @@ const cognitoStack = new CognitoStack(app, 'MemersonCognitoStack', {});
 
 const s3Stack = new S3Stack(app, 'MemersonS3Stack', {
   unauthenticatedRole: cognitoStack.unauthenticatedRole,
-  authenticatedRole: cognitoStack.authenticatedRole
+  authenticatedRole: cognitoStack.authenticatedRole,
+  assetsBucket: cloudfrontStack.assetsBucket
 });
 
 new ApiStack(app, 'MemersonApiStack', {
@@ -30,7 +31,8 @@ new ApiStack(app, 'MemersonApiStack', {
   userPoolClient: cognitoStack.userPoolClient,
   authorizedRole: cognitoStack.authenticatedRole,
   unauthenticatedRole: cognitoStack.unauthenticatedRole,
-  publicPhotosBucket: s3Stack.publicPhotosBucket
+  publicPhotosBucket: s3Stack.publicPhotosBucket,
+  assetsBucket: cloudfrontStack.assetsBucket
 });
 
 new MinecraftStack(app, 'MemersonMinecraftStack', {

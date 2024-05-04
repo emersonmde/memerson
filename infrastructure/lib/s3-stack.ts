@@ -3,7 +3,6 @@ import * as iam from '@aws-cdk/aws-iam';
 import * as lambda from '@aws-cdk/aws-lambda-python';
 import * as event from '@aws-cdk/aws-lambda-event-sources';
 import * as s3 from '@aws-cdk/aws-s3';
-import {IBucket} from '@aws-cdk/aws-s3';
 import {Runtime} from '@aws-cdk/aws-lambda';
 import {join} from 'path';
 import {Duration} from "@aws-cdk/core";
@@ -11,10 +10,11 @@ import {Duration} from "@aws-cdk/core";
 export interface S3StackProps extends cdk.StackProps {
   readonly unauthenticatedRole: iam.Role;
   readonly authenticatedRole: iam.Role;
+  readonly assetsBucket: s3.IBucket;
 }
 
 export class S3Stack extends cdk.Stack {
-  public publicPhotosBucket: IBucket;
+  public publicPhotosBucket: s3.IBucket;
 
   constructor(scope: cdk.Construct, id: string, props: S3StackProps) {
     super(scope, id, props);
@@ -57,7 +57,10 @@ export class S3Stack extends cdk.Stack {
       handler: 'resize_photo_handler',
       runtime: Runtime.PYTHON_3_9,
       timeout: Duration.minutes(2),
-      memorySize: 512
+      memorySize: 512,
+      environment: {
+        ASSETS_BUCKET_NAME: props.assetsBucket.bucketName,
+      }
     });
 
     photosBucket.grantReadWrite(resizeLambda);
