@@ -26,7 +26,7 @@ aws lambda invoke function_name --data-file ./path/to/input.json
 
 Build the release target using
 ```
-cargo lambda build --release --target x86_64-unknown-linux-gnu
+cargo lambda build --release --target x86_64-unknown-linux-musl --output-format zip
 ```
 
 Then in the `infrastructure` directory run

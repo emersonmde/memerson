@@ -93,7 +93,7 @@ export class ApiStack extends cdk.Stack {
     const photosApi = api.root.addResource('photos');
     const listPhotosMethod = photosApi.addMethod(
       'GET',
-      new apigateway.LambdaIntegration(listPhotosLambda, {proxy: true}),
+      new apigateway.LambdaIntegration(rustListPhotosLambda, {proxy: true}),
       {authorizationType: apigateway.AuthorizationType.NONE}
     )
 

@@ -72,7 +72,7 @@ export class S3Stack extends cdk.Stack {
 
     this.publicPhotosBucket = new s3.Bucket(this, 'MemersonPublicPhotos', {
       bucketName: 'memerson-public-photos',
-      publicReadAccess: true
+      publicReadAccess: false
     });
 
     this.publicPhotosBucket.grantReadWrite(resizeLambda);
